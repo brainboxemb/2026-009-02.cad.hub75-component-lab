@@ -63,7 +63,7 @@ module relief_baseline(part_color) {
         use_tension_bore = use_tension_bore,
         high_resolution = high_resolution,
         part_color = part_color,
-        orientation = mi_orientation
+        orientation = "design"
     );
 }
 
@@ -171,7 +171,8 @@ module lock_release_clip(
         lock_release_clamp(shape),
         use_tension_bore = false,
         high_resolution = high_resolution,
-        part_color = part_color
+        part_color = part_color,
+        orientation = mi_orientation
     );
 }
 

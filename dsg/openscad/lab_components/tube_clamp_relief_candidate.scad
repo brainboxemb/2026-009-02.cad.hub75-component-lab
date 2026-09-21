@@ -1,7 +1,7 @@
 // Lab-only candidate modifier for the HUB75 tube clamp.
 //
 // The parent component is built with its production transition relief disabled.
-// This experiment is applied directly in the standardized development
+// This experiment is applied directly in the standardized design
 // orientation:
 //
 //   dovetail mounting/root plane = XY
