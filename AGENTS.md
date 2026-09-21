@@ -9,8 +9,8 @@ Keep geometry feedback loops small and fast. Develop one component problem at a
 time with the minimum dependencies needed to reproduce it.
 
 The parent HUB75 repository remains the production source of truth. This lab is
-temporary development space; accepted geometry changes must be ported back to the
-parent project rather than creating a second long-lived implementation.
+temporary development space; accepted geometry changes must be ported back to
+the parent project rather than creating a second long-lived implementation.
 
 ## Working rules
 
@@ -21,11 +21,21 @@ parent project rather than creating a second long-lived implementation.
 - remove parent-project dependencies when a small explicit local datum is enough;
 - prefer direct component preview/render over whole-display builds;
 - record parent source branch/commit when importing a component baseline;
-- after acceptance, port the minimal delta back to the parent project and verify
-  it there.
+- after acceptance, port the minimal delta back to the owning project/library
+  and verify it there;
+- once promoted, use the released/parent-owned implementation instead of keeping
+  a second lab implementation of the same behavior.
 
-## Current focus
+## Current status
 
-Initial focus is the HUB75 detachable tube clamp from parent PR #45, specifically
-the small local transition-foot relief. The fixed clamp body and dovetail
-interface are not to be redesigned while evaluating that relief.
+The first clamp experiment is complete.
+
+- constant-wall tension behavior is owned by `lib.scad.clamps v0.1.8`;
+- the accepted side relief is ported to parent PR #45 at
+  `2a6e043c5c03ef95d175da3ad74c86a5394d55d3`;
+- accepted relief calibration is R6 / 0.4 mm bite / 4 mm development-Z height /
+  1 mm development-Z offset;
+- parent PR #45 is the production source of truth.
+
+Do not extend the completed clamp experiment with unrelated changes. Start the
+next lab iteration only for a newly scoped component question.
