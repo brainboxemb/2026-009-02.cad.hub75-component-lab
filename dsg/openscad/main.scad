@@ -27,6 +27,7 @@ relief_depth = 3.0;
 
 /* [Tension experiment] */
 tension_view = "comparison"; // [functional,current_tension,constant_wall_tension,comparison]
+tension_display = "profile_2d"; // [profile_2d,model_3d]
 tension_diameter = 9.6;
 tension_comparison_spacing = 18;
 
@@ -95,31 +96,42 @@ module relief_experiment() {
 // directly comparable without the HUB75 project transform or perspective.
 // ----------------------------------------------------------------------
 
+module _tension_display() {
+    if (tension_display == "profile_2d")
+        projection(cut = false)
+            children();
+    else
+        children();
+}
+
 module tension_functional(part_color) {
     color(part_color)
-        tube_clamp_build(
-            base_clamp,
-            use_tension_bore = false,
-            high_resolution = high_resolution
-        );
+        _tension_display()
+            tube_clamp_build(
+                base_clamp,
+                use_tension_bore = false,
+                high_resolution = high_resolution
+            );
 }
 
 module tension_current(part_color) {
     color(part_color)
-        tube_clamp_build(
-            base_clamp,
-            use_tension_bore = true,
-            high_resolution = high_resolution
-        );
+        _tension_display()
+            tube_clamp_build(
+                base_clamp,
+                use_tension_bore = true,
+                high_resolution = high_resolution
+            );
 }
 
 module tension_constant_wall(part_color) {
     color(part_color)
-        hub75_lab_tube_clamp_constant_wall_build(
-            base_clamp,
-            use_tension_bore = true,
-            high_resolution = high_resolution
-        );
+        _tension_display()
+            hub75_lab_tube_clamp_constant_wall_build(
+                base_clamp,
+                use_tension_bore = true,
+                high_resolution = high_resolution
+            );
 }
 
 module tension_experiment() {
@@ -154,8 +166,9 @@ if (experiment == "relief") {
 
     relief_experiment();
 } else {
-    // Exact profile direction: look along native clamp-width Z.
-    // OpenSCAD's Orthogonal camera mode gives the cleanest comparison.
+    // profile_2d uses projection() and is therefore exact and independent of
+    // perspective/orthogonal UI state. model_3d keeps the same straight-on
+    // profile camera for inspecting the actual solid.
     $vpt = [
         base_clamp.base_thickness
             + tube_clamp_outer_radius(base_clamp),
