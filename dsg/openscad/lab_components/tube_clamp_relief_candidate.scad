@@ -1,14 +1,22 @@
 // Lab-only candidate modifier for the HUB75 tube clamp.
 //
-// The parent component is always built with its production transition relief
-// disabled.  This file performs the experiment entirely in the standardized
-// development orientation:
+// The parent component is built with its production transition relief disabled.
+// This experiment is applied directly in the standardized development
+// orientation:
 //
 //   dovetail mounting/root plane = XY
-//   local experiment cutter axis = Z
+//   local relief-cylinder axis   = Z
 //
-// Once accepted, only the resulting geometric rule is translated back into
-// parent-project coordinates.
+// Confirmed calibration:
+//   clamp width = 12 mm
+//   radius      = 5 mm
+//   bite        = 1 mm
+//
+// Therefore the cylinder centres sit at:
+//   abs(X) = clamp_width/2 + radius - bite = 10 mm
+//
+// Once accepted, only this geometric rule is translated back into the parent
+// project.
 
 use <../lab_orientation.scad>
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
@@ -31,70 +39,95 @@ module hub75_lab_tube_clamp_baseline(
         );
 }
 
-module hub75_lab_tube_clamp_relief_probe(
+module hub75_lab_tube_clamp_relief_cutter(
     clamp,
-    radius = 10,
+    radius = 5,
+    bite = 1,
     depth = 2,
     high_resolution = true
 ) {
     b = clamp.base_clamp;
+
+    assert(radius > 0, "lab relief radius must be > 0");
+    assert(bite >= 0 && bite <= radius,
+        "lab relief bite must be between 0 and radius");
+    assert(depth > 0, "lab relief depth must be > 0");
+
     outer_r = tube_clamp_outer_radius(b);
     ring_center_x = b.base_thickness + outer_r;
     attach_x = min(
         b.base_thickness + b.transition_depth,
         ring_center_x + outer_r - b.extra
     );
-    attach_dx = attach_x - ring_center_x;
-    attach_y = sqrt(max(
-        0.01,
-        outer_r * outer_r - attach_dx * attach_dx
-    ));
 
-    // Diagnostic only:
-    // one single transition -> ring attach point, no symmetry and no cutting.
-    //
-    // Clamp extrusion/project-X becomes development-X.  Use the middle of that
-    // width so the probe cannot accidentally be interpreted as an end-face
-    // feature again.
-    probe_x = 10;
+    // Confirmed position from the visual calibration.
+    cutter_x =
+        b.clamp_width / 2
+        + radius
+        - bite;
 
-    // Same marked location on both sides of the clamp extrusion.
-    probe_y = clamp.tube_center_z;
+    cutter_y = clamp.tube_center_z;
 
-    probe_z =
+    cutter_z =
         attach_x
         - clamp.tube_center_y
         - ring_center_x;
 
+    // Same shallow local cut on both clamp sides.
     for (side = [-1, 1])
-        color([0.05, 0.90, 0.15, 0.65])
-            translate([
-                side * probe_x,
-                probe_y,
-                probe_z - depth / 2
-            ])
-                cylinder(
-                    r = radius,
-                    h = depth,
-                    $fn = high_resolution ? 96 : 32
-                );
+        translate([
+            side * cutter_x,
+            cutter_y,
+            cutter_z - depth / 2
+        ])
+            cylinder(
+                r = radius,
+                h = depth,
+                $fn = high_resolution ? 96 : 32
+            );
+}
+
+module hub75_lab_tube_clamp_relief_probe(
+    clamp,
+    radius = 5,
+    bite = 1,
+    depth = 2,
+    high_resolution = true
+) {
+    color([0.05, 0.90, 0.15, 0.65])
+        hub75_lab_tube_clamp_relief_cutter(
+            clamp,
+            radius = radius,
+            bite = bite,
+            depth = depth,
+            high_resolution = high_resolution
+        );
 }
 
 module hub75_lab_tube_clamp_candidate(
     clamp,
-    radius = 10,
+    radius = 5,
     bite = 1,
     depth = 2,
     use_tension_bore = false,
     high_resolution = true,
     part_color = [0.88, 0.08, 0.05, 1]
 ) {
-    // Until the target location is visually confirmed, the candidate is kept
-    // identical to the baseline.  Do not subtract a speculative cutter.
-    hub75_lab_tube_clamp_baseline(
-        clamp,
-        use_tension_bore = use_tension_bore,
-        high_resolution = high_resolution,
-        part_color = part_color
-    );
+    color(part_color)
+        difference() {
+            hub75_lab_tube_clamp_baseline(
+                clamp,
+                use_tension_bore = use_tension_bore,
+                high_resolution = high_resolution,
+                part_color = [1, 1, 1, 1]
+            );
+
+            hub75_lab_tube_clamp_relief_cutter(
+                clamp,
+                radius = radius,
+                bite = bite,
+                depth = depth,
+                high_resolution = high_resolution
+            );
+        }
 }

@@ -15,7 +15,7 @@ view = "comparison"; // [relief,baseline,comparison,removed]
 bore = "functional"; // [functional,tension]
 
 /* [Transition relief] */
-relief_radius = 10.0;
+relief_radius = 5.0;
 relief_bite = 1.0;
 relief_depth = 2.0;
 
