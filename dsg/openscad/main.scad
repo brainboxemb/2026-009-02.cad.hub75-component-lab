@@ -1,5 +1,6 @@
 // HUB75 component-lab workbench.
 use <project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
+use <project_components/tube_mount/tube_mount_interface.scad>
 
 /* [Profile] */
 profile = "medium"; // [small,medium,large]

@@ -1,4 +1,5 @@
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
+use <../project_components/tube_mount/tube_mount_interface.scad>
 
 clamp = hub75_tube_clamp_create(
     dovetail = hub75_tube_mount_dovetail_create_for_size("medium"),
