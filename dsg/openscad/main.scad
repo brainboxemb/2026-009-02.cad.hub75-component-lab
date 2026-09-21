@@ -34,7 +34,7 @@ tension_comparison_spacing = 18;
 /* [Male lock release] */
 lock_release_view = "single"; // [single,comparison]
 lock_release_shape = "trapezoid"; // [rectangular,trapezoid]
-lock_release_top_depth = 0.30;
+lock_release_taper_angle = 45;
 lock_release_comparison_spacing = 28;
 
 /* [Preview] */
@@ -149,8 +149,7 @@ function lock_release_dovetail(shape) =
     hub75_tube_mount_dovetail_create_for_size(
         profile,
         lock_release_shape = shape,
-        lock_release_top_depth =
-            lock_release_top_depth
+        lock_release_taper_angle = lock_release_taper_angle
     );
 
 function lock_release_clamp(shape) =

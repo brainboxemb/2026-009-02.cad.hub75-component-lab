@@ -95,7 +95,7 @@ function hub75_tube_mount_dovetail_create(
     dovetail_height = undef,
     entry_slot_length = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LENGTH,
     lock_release_shape = "rectangular",
-    lock_release_top_depth = undef
+    lock_release_taper_angle = 45
 ) =
     let(
         active_dovetail_height =
@@ -134,7 +134,7 @@ function hub75_tube_mount_dovetail_create(
         lock_spring_hinge_thickness =
             _HUB75_TUBE_MOUNT_LOCK_HINGE_THICKNESS,
         lock_release_shape = lock_release_shape,
-        lock_release_top_depth = lock_release_top_depth,
+        lock_release_taper_angle = lock_release_taper_angle,
         lock_cut_back_clearance = false,
         lock_back_clearance = 0
     );
@@ -143,14 +143,14 @@ function hub75_tube_mount_dovetail_create_for_size(
     size,
     entry_slot_length = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LENGTH,
     lock_release_shape = "rectangular",
-    lock_release_top_depth = undef
+    lock_release_taper_angle = 45
 ) =
     hub75_tube_mount_dovetail_create(
         host_depth = hub75_tube_mount_host_depth_for_size(size),
         dovetail_height = hub75_tube_mount_dovetail_height_for_size(size),
         entry_slot_length = entry_slot_length,
         lock_release_shape = lock_release_shape,
-        lock_release_top_depth = lock_release_top_depth
+        lock_release_taper_angle = lock_release_taper_angle
     );
 
 function hub75_tube_mount_dovetail_angle(dovetail) =

@@ -6,13 +6,13 @@ use <../project_components/tube_mount/tube_mount_interface.scad>
 use <../lab_components/tube_clamp_relief_candidate.scad>
 
 profile = "medium";
-top_depth = 0.30;
+taper_angle = 45;
 
 dovetail =
     hub75_tube_mount_dovetail_create_for_size(
         profile,
         lock_release_shape = "trapezoid",
-        lock_release_top_depth = top_depth
+        lock_release_taper_angle = taper_angle
     );
 
 clamp =
