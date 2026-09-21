@@ -3,6 +3,14 @@
 This repository is the isolated HUB75 CAD component lab for parent project
 `brainboxemb/2026-009-01.cad.HUB75-display-frame`.
 
+## Shared SCAD convention
+
+Shared SCAD naming conventions are owned by
+[brainboxemb.meta/domains/scad/coding-conventions.md](https://github.com/brainboxemb/brainboxemb.meta/blob/main/domains/scad/coding-conventions.md).
+Use that convention for `d_` design inputs, `c_` presentation/Customizer
+state, explicit unit suffixes, constants and leading-underscore private names.
+Do not duplicate or redefine the shared naming scheme in this lab.
+
 ## Purpose
 
 Keep geometry feedback loops small and fast. Develop one component problem at a
