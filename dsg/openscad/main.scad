@@ -34,9 +34,9 @@ tension_comparison_spacing = 18;
 
 /* [Lock transverse relief] */
 lock_view = "section_comparison"; // [section_comparison,rectangular,trapezoid]
-lock_angle = 45;
+lock_top_length = 0.4;
 lock_section_thickness = 0.45;
-lock_comparison_spacing = 9;
+lock_comparison_spacing = 18;
 
 /* [Preview] */
 high_resolution = false;
@@ -159,7 +159,7 @@ module lock_relief_section(
             hub75_lab_lock_transverse_relief_section(
                 size = profile,
                 shape = shape,
-                angle = lock_angle,
+                top_length = lock_top_length,
                 section_thickness =
                     lock_section_thickness
             );
@@ -178,8 +178,8 @@ module lock_relief_experiment() {
         );
     else {
         translate([
-            0,
             -lock_comparison_spacing / 2,
+            0,
             0
         ])
             lock_relief_section(
@@ -188,8 +188,8 @@ module lock_relief_experiment() {
             );
 
         translate([
-            0,
             lock_comparison_spacing / 2,
+            0,
             0
         ])
             lock_relief_section(
@@ -230,12 +230,12 @@ if (experiment == "relief") {
 } else {
     // Right-side print-oriented inspection: print Y horizontal, print Z
     // vertical. The thin section exposes the transverse opening directly.
-    $vpt = [0, 0.5, 0];
-    $vpr = [90, 0, 90];
+    $vpt = [0, 0, 0];
+    $vpr = [90, 0, 0];
     $vpd =
         lock_view == "section_comparison"
-            ? 62
-            : 48;
+            ? 78
+            : 58;
 
     lock_relief_experiment();
 }

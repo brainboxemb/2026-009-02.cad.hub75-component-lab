@@ -1,36 +1,38 @@
 // Lab fixture for the female dovetail lock transverse relief.
 //
-// Builds a neutral host using the real HUB75 interface object and project
-// transform.  The optional thin section passes through the short transverse
-// spring opening so its print-oriented Y/Z profile is directly visible.
+// The candidate trapezoid is defined in mechint native X/Z:
+//   native Z = intended print/build direction
+//   native X = transverse-opening length
+//
+// The full fixture uses the actual HUB75 interface transform. The thin section
+// is taken through project Y so the native X/Z opening profile is visible.
 
 use <../project_components/tube_mount/tube_mount_interface.scad>
 
-function hub75_lab_lock_fixture_section_project_z(
-    dovetail,
-    slide = 16
+function hub75_lab_lock_transverse_relief_section_project_y(
+    dovetail
 ) =
-    let(
-        female_slide =
-            hub75_tube_mount_dovetail_female_slide(
-                dovetail,
-                slide
-            )
-    )
-    female_slide / 2
-    + dovetail.lock.spring.relief / 2;
+    hub75_tube_mount_dovetail_mouth_y()
+    + sliding_dovetail_female_height(dovetail)
+    + (
+        dovetail.lock.spring.thickness
+        + (dovetail.lock.spring.cut_back_clearance
+            ? dovetail.lock.spring.back_clearance
+            : 0)
+    ) / 2;
 
 module hub75_lab_lock_transverse_relief_fixture(
     size = "medium",
     shape = "rectangular",
-    angle = 45,
+    top_length = undef,
     slide = 16
 ) {
     dovetail =
         hub75_tube_mount_dovetail_create_for_size(
             size,
             lock_spring_transverse_relief_shape = shape,
-            lock_spring_transverse_relief_angle = angle
+            lock_spring_transverse_relief_top_length =
+                top_length
         );
 
     female_slide =
@@ -84,7 +86,7 @@ module hub75_lab_lock_transverse_relief_fixture(
 module hub75_lab_lock_transverse_relief_section(
     size = "medium",
     shape = "rectangular",
-    angle = 45,
+    top_length = undef,
     slide = 16,
     section_thickness = 0.45
 ) {
@@ -92,32 +94,32 @@ module hub75_lab_lock_transverse_relief_section(
         hub75_tube_mount_dovetail_create_for_size(
             size,
             lock_spring_transverse_relief_shape = shape,
-            lock_spring_transverse_relief_angle = angle
+            lock_spring_transverse_relief_top_length =
+                top_length
         );
 
-    section_z =
-        hub75_lab_lock_fixture_section_project_z(
-            dovetail,
-            slide
+    section_y =
+        hub75_lab_lock_transverse_relief_section_project_y(
+            dovetail
         );
 
     intersection() {
         hub75_lab_lock_transverse_relief_fixture(
             size = size,
             shape = shape,
-            angle = angle,
+            top_length = top_length,
             slide = slide
         );
 
         translate([
             -50,
-            -50,
-            section_z - section_thickness / 2
+            section_y - section_thickness / 2,
+            -50
         ])
             cube([
                 100,
-                100,
-                section_thickness
+                section_thickness,
+                100
             ]);
     }
 }
