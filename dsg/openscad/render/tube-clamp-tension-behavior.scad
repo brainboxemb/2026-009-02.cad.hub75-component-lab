@@ -1,13 +1,12 @@
-// Profile comparison of tube-clamp tension semantics.
+// Profile comparison of released tube-clamp tension semantics.
 //
-// Left   = functional geometry
-// Middle = current tension behavior (smaller bore only)
-// Right  = proposed constant-wall tension behavior
+// Left  = functional geometry
+// Right = tension geometry from lib.scad.clamps v0.1.8
 //
-// Camera looks exactly along clamp-width Z to remove perspective ambiguity.
+// The selected tension geometry shrinks both inner and outer radii by the same
+// amount, preserving wall_thickness around the fixed nominal ring centre.
 
 use <../ext/lib.scad.clamps/openscad/tube-clamp/tube_clamp.scad>
-use <../lab_components/tube_clamp_constant_wall.scad>
 
 clamp = tube_clamp_create(
     tube_diameter = 10,
@@ -29,27 +28,22 @@ center_x =
 
 $vpr = [0, 0, 0];
 $vpt = [center_x, 0, clamp.clamp_width / 2];
-$vpd = 90;
+$vpd = 75;
 
-translate([-spacing, 0, 0])
+translate([-spacing / 2, 0, 0])
     color([0.72, 0.72, 0.72, 1])
-        tube_clamp_build(
-            clamp,
-            use_tension_bore = false,
-            high_resolution = true
-        );
+        projection(cut = false)
+            tube_clamp_build(
+                clamp,
+                use_tension_bore = false,
+                high_resolution = true
+            );
 
-color([0.88, 0.08, 0.05, 1])
-    tube_clamp_build(
-        clamp,
-        use_tension_bore = true,
-        high_resolution = true
-    );
-
-translate([spacing, 0, 0])
+translate([spacing / 2, 0, 0])
     color([0.10, 0.45, 0.85, 1])
-        hub75_lab_tube_clamp_constant_wall_build(
-            clamp,
-            use_tension_bore = true,
-            high_resolution = true
-        );
+        projection(cut = false)
+            tube_clamp_build(
+                clamp,
+                use_tension_bore = true,
+                high_resolution = true
+            );

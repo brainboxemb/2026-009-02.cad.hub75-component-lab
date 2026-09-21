@@ -1,17 +1,16 @@
 // HUB75 component-lab workbench.
 //
-// Use 'experiment' to switch between the current relief work and the reusable
-// tube-clamp tension semantics experiment.
+// Use 'experiment' to switch between the current relief work and the released
+// tube-clamp tension behavior.
 
 use <lab_orientation.scad>
 use <ext/lib.scad.clamps/openscad/tube-clamp/tube_clamp.scad>
 use <project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <project_components/tube_mount/tube_mount_interface.scad>
 use <lab_components/tube_clamp_relief_candidate.scad>
-use <lab_components/tube_clamp_constant_wall.scad>
 
 /* [Lab] */
-experiment = "tension"; // [relief,tension]
+experiment = "relief"; // [relief,tension]
 
 /* [Profile] */
 profile = "medium"; // [small,medium,large]
@@ -27,7 +26,7 @@ relief_z_height = 4.0;
 relief_z_offset = 1.0;
 
 /* [Tension experiment] */
-tension_view = "comparison"; // [functional,current_tension,constant_wall_tension,comparison]
+tension_view = "comparison"; // [functional,tension,comparison]
 tension_display = "profile_2d"; // [profile_2d,model_3d]
 tension_diameter = 9.6;
 tension_comparison_spacing = 18;
@@ -93,9 +92,9 @@ module relief_experiment() {
 // ----------------------------------------------------------------------
 // Tension experiment
 //
-// This deliberately renders the reusable base clamp in its native orientation
-// and looks straight along clamp-width Z.  That makes inner and outer diameters
-// directly comparable without the HUB75 project transform or perspective.
+// lib.scad.clamps v0.1.8 shrinks both inner and outer radii for tension
+// geometry, preserving wall_thickness while keeping the nominal ring centre
+// fixed.  profile_2d makes that relationship directly inspectable.
 // ----------------------------------------------------------------------
 
 module _tension_display() {
@@ -116,7 +115,7 @@ module tension_functional(part_color) {
             );
 }
 
-module tension_current(part_color) {
+module tension_active(part_color) {
     color(part_color)
         _tension_display()
             tube_clamp_build(
@@ -126,31 +125,17 @@ module tension_current(part_color) {
             );
 }
 
-module tension_constant_wall(part_color) {
-    color(part_color)
-        _tension_display()
-            hub75_lab_tube_clamp_constant_wall_build(
-                base_clamp,
-                use_tension_bore = true,
-                high_resolution = high_resolution
-            );
-}
-
 module tension_experiment() {
     if (tension_view == "functional")
         tension_functional([0.72, 0.72, 0.72, 1]);
-    else if (tension_view == "current_tension")
-        tension_current([0.88, 0.08, 0.05, 1]);
-    else if (tension_view == "constant_wall_tension")
-        tension_constant_wall([0.10, 0.45, 0.85, 1]);
+    else if (tension_view == "tension")
+        tension_active([0.10, 0.45, 0.85, 1]);
     else {
-        translate([-tension_comparison_spacing, 0, 0])
+        translate([-tension_comparison_spacing / 2, 0, 0])
             tension_functional([0.72, 0.72, 0.72, 1]);
 
-        tension_current([0.88, 0.08, 0.05, 1]);
-
-        translate([tension_comparison_spacing, 0, 0])
-            tension_constant_wall([0.10, 0.45, 0.85, 1]);
+        translate([tension_comparison_spacing / 2, 0, 0])
+            tension_active([0.10, 0.45, 0.85, 1]);
     }
 }
 
@@ -168,9 +153,6 @@ if (experiment == "relief") {
 
     relief_experiment();
 } else {
-    // profile_2d uses projection() and is therefore exact and independent of
-    // perspective/orthogonal UI state. model_3d keeps the same straight-on
-    // profile camera for inspecting the actual solid.
     $vpt = [
         base_clamp.base_thickness
             + tube_clamp_outer_radius(base_clamp),
@@ -180,7 +162,7 @@ if (experiment == "relief") {
     $vpr = [0, 0, 0];
     $vpd =
         tension_view == "comparison"
-            ? 90
+            ? 75
             : 55;
 
     tension_experiment();
