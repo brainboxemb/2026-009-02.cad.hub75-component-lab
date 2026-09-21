@@ -1,5 +1,7 @@
-// Close-up: resulting clamp in grey, removed relief volume in red.
+// Close-up in development orientation:
+// resulting clamp in grey, removed relief volume in red.
 
+use <../lab_orientation.scad>
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <../project_components/tube_mount/tube_mount_interface.scad>
 
@@ -11,17 +13,18 @@ clamp = hub75_tube_clamp_create(
 );
 
 module clamp_geometry(apply_relief, part_color) {
-    hub75_tube_clamp_build(
-        clamp,
-        part_color = part_color,
-        use_tension_bore = false,
-        high_resolution = true,
-        apply_transition_relief = apply_relief
-    );
+    hub75_lab_development_orientation()
+        hub75_tube_clamp_build(
+            clamp,
+            part_color = part_color,
+            use_tension_bore = false,
+            high_resolution = true,
+            apply_transition_relief = apply_relief
+        );
 }
 
-$vpt = [0, -3.5, 10];
-$vpr = [65, 0, 25];
+$vpt = [0, 10, 0];
+$vpr = [55, 0, 35];
 $vpd = 72;
 
 // Final candidate.

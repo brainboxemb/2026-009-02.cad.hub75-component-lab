@@ -1,5 +1,6 @@
-// Stable before/after evidence for the current clamp-relief candidate.
+// Stable before/after evidence in development orientation.
 
+use <../lab_orientation.scad>
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <../project_components/tube_mount/tube_mount_interface.scad>
 
@@ -12,24 +13,23 @@ clamp = hub75_tube_clamp_create(
 
 spacing = 18;
 
-$vpt = [0, -3.5, 10];
-$vpr = [65, 0, 25];
+$vpt = [0, 10, 0];
+$vpr = [55, 0, 35];
 $vpd = 115;
 
+module development_clamp(apply_relief, part_color) {
+    hub75_lab_development_orientation()
+        hub75_tube_clamp_build(
+            clamp,
+            part_color = part_color,
+            use_tension_bore = false,
+            high_resolution = true,
+            apply_transition_relief = apply_relief
+        );
+}
+
 translate([-spacing / 2, 0, 0])
-    hub75_tube_clamp_build(
-        clamp,
-        part_color = [0.72, 0.72, 0.72, 1],
-        use_tension_bore = false,
-        high_resolution = true,
-        apply_transition_relief = false
-    );
+    development_clamp(false, [0.72, 0.72, 0.72, 1]);
 
 translate([spacing / 2, 0, 0])
-    hub75_tube_clamp_build(
-        clamp,
-        part_color = [0.88, 0.08, 0.05, 1],
-        use_tension_bore = false,
-        high_resolution = true,
-        apply_transition_relief = true
-    );
+    development_clamp(true, [0.88, 0.08, 0.05, 1]);

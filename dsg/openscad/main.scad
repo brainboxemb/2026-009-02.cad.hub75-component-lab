@@ -1,4 +1,7 @@
 // HUB75 component-lab workbench.
+// Geometry is shown in the standardized development orientation.
+
+use <lab_orientation.scad>
 use <project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <project_components/tube_mount/tube_mount_interface.scad>
 
@@ -28,13 +31,14 @@ clamp = hub75_tube_clamp_create(
 use_tension_bore = bore == "tension";
 
 module clamp_view(apply_relief, part_color) {
-    hub75_tube_clamp_build(
-        clamp,
-        part_color = part_color,
-        use_tension_bore = use_tension_bore,
-        high_resolution = high_resolution,
-        apply_transition_relief = apply_relief
-    );
+    hub75_lab_development_orientation()
+        hub75_tube_clamp_build(
+            clamp,
+            part_color = part_color,
+            use_tension_bore = use_tension_bore,
+            high_resolution = high_resolution,
+            apply_transition_relief = apply_relief
+        );
 }
 
 if (view == "baseline")
@@ -50,6 +54,7 @@ else if (view == "removed")
 else {
     translate([-comparison_spacing / 2, 0, 0])
         clamp_view(false, [0.72, 0.72, 0.72, 1]);
+
     translate([comparison_spacing / 2, 0, 0])
         clamp_view(true, [0.88, 0.08, 0.05, 1]);
 }

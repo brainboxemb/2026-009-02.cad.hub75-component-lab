@@ -1,5 +1,6 @@
-// STL export of the current isolated clamp-relief candidate.
+// STL export of the current candidate in development orientation.
 
+use <../lab_orientation.scad>
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <../project_components/tube_mount/tube_mount_interface.scad>
 
@@ -10,9 +11,10 @@ clamp = hub75_tube_clamp_create(
     transition_relief_face_depth = 2.0
 );
 
-hub75_tube_clamp_build(
-    clamp,
-    use_tension_bore = true,
-    high_resolution = true,
-    apply_transition_relief = true
-);
+hub75_lab_development_orientation()
+    hub75_tube_clamp_build(
+        clamp,
+        use_tension_bore = true,
+        high_resolution = true,
+        apply_transition_relief = true
+    );
