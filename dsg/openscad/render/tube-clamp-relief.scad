@@ -25,9 +25,9 @@ translate([-spacing / 2, 0, 0])
 translate([spacing / 2, 0, 0])
     hub75_lab_tube_clamp_candidate(
         clamp,
-        radius = 5,
-        bite = 1,
-        depth = 2,
+        radius = 6,
+        bite = 0.4,
+        depth = 3,
         use_tension_bore = false,
         high_resolution = true
     );

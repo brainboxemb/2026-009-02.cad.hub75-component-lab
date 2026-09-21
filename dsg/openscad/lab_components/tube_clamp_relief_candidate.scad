@@ -9,11 +9,11 @@
 //
 // Confirmed calibration:
 //   clamp width = 12 mm
-//   radius      = 5 mm
-//   bite        = 1 mm
+//   radius      = 6 mm
+//   bite        = 0.4 mm
 //
 // Therefore the cylinder centres sit at:
-//   abs(X) = clamp_width/2 + radius - bite = 10 mm
+//   abs(X) = clamp_width/2 + radius - bite = 0.40 mm
 //
 // Once accepted, only this geometric rule is translated back into the parent
 // project.
@@ -41,9 +41,9 @@ module hub75_lab_tube_clamp_baseline(
 
 module hub75_lab_tube_clamp_relief_cutter(
     clamp,
-    radius = 5,
-    bite = 1,
-    depth = 2,
+    radius = 6,
+    bite = 0.4,
+    depth = 3,
     high_resolution = true
 ) {
     b = clamp.base_clamp;
@@ -89,9 +89,9 @@ module hub75_lab_tube_clamp_relief_cutter(
 
 module hub75_lab_tube_clamp_relief_probe(
     clamp,
-    radius = 5,
-    bite = 1,
-    depth = 2,
+    radius = 6,
+    bite = 0.4,
+    depth = 3,
     high_resolution = true
 ) {
     color([0.05, 0.90, 0.15, 0.65])
@@ -106,9 +106,9 @@ module hub75_lab_tube_clamp_relief_probe(
 
 module hub75_lab_tube_clamp_candidate(
     clamp,
-    radius = 5,
-    bite = 1,
-    depth = 2,
+    radius = 6,
+    bite = 0.4,
+    depth = 3,
     use_tension_bore = false,
     high_resolution = true,
     part_color = [0.88, 0.08, 0.05, 1]

@@ -11,9 +11,9 @@ clamp = hub75_tube_clamp_create(
 
 hub75_lab_tube_clamp_candidate(
     clamp,
-    radius = 5,
-    bite = 1,
-    depth = 2,
+    radius = 6,
+    bite = 0.4,
+    depth = 3,
     use_tension_bore = true,
     high_resolution = true
 );
