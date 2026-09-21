@@ -36,14 +36,23 @@ the parent project rather than creating a second long-lived implementation.
 
 ## Current status
 
-The first clamp experiment is complete.
+The clamp lab work on PR #3 is complete.
 
 - constant-wall tension behavior is owned by `lib.scad.clamps v0.1.8`;
 - the accepted side relief is ported to parent PR #45 at
   `2a6e043c5c03ef95d175da3ad74c86a5394d55d3`;
-- accepted relief calibration is R6 / 0.4 mm bite / 4 mm development-Z height /
-  1 mm development-Z offset;
-- parent PR #45 is the production source of truth.
+- accepted side-relief calibration is R6 / 0.4 mm bite / 4 mm design-Z height /
+  1 mm design-Z offset;
+- printable male lock-release wedges are owned by
+  `lib.scad.mechint v0.1.6` at source
+  `bdd39925f2ad391b32fad7ba56770053d4d5e2bc`;
+- the accepted release shape is trapezoid / 45 degrees, implemented as two
+  additional symmetric cuts while retaining the full rectangular release
+  opening;
+- parent PR #45 integrates that released interface at
+  `9bda6dddec7eea0ddd1364d41cff6919b9c7b143`;
+- the parent HUB75 repository and released reusable libraries are the production
+  sources of truth.
 
-Do not extend the completed clamp experiment with unrelated changes. Start the
-next lab iteration only for a newly scoped component question.
+Do not keep extending these completed experiments. Start a new lab iteration
+only for a newly scoped component question.
