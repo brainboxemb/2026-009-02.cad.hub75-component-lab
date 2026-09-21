@@ -1,5 +1,7 @@
 // Stable before/after evidence in development orientation.
 
+use <../lab_orientation.scad>
+use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <../lab_components/tube_clamp_relief_candidate.scad>
 use <../project_components/tube_mount/tube_mount_interface.scad>
 
