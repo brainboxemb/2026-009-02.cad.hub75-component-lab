@@ -1,35 +1,29 @@
 // Stable before/after evidence in development orientation.
 
-use <../lab_orientation.scad>
-use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
+use <../lab_components/tube_clamp_relief_candidate.scad>
 use <../project_components/tube_mount/tube_mount_interface.scad>
 
 clamp = hub75_tube_clamp_create(
-    dovetail = hub75_tube_mount_dovetail_create_for_size("medium"),
-    transition_relief_radius = 10.0,
-    transition_relief_bite = 1.0,
-    transition_relief_face_depth = 2.0
+    dovetail = hub75_tube_mount_dovetail_create_for_size("medium")
 );
 
 spacing = 18;
 
-$vpt = [0, 10, 0];
 $vpr = [55, 0, 35];
-$vpd = 115;
-
-module development_clamp(apply_relief, part_color) {
-    hub75_lab_development_orientation()
-        hub75_tube_clamp_build(
-            clamp,
-            part_color = part_color,
-            use_tension_bore = false,
-            high_resolution = true,
-            apply_transition_relief = apply_relief
-        );
-}
 
 translate([-spacing / 2, 0, 0])
-    development_clamp(false, [0.72, 0.72, 0.72, 1]);
+    hub75_lab_tube_clamp_baseline(
+        clamp,
+        use_tension_bore = false,
+        high_resolution = true
+    );
 
 translate([spacing / 2, 0, 0])
-    development_clamp(true, [0.88, 0.08, 0.05, 1]);
+    hub75_lab_tube_clamp_candidate(
+        clamp,
+        radius = 10,
+        bite = 1,
+        depth = 2,
+        use_tension_bore = false,
+        high_resolution = true
+    );
