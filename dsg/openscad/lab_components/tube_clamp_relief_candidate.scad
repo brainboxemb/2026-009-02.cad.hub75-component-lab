@@ -58,7 +58,7 @@ module hub75_lab_tube_clamp_relief_probe(
     // feature again.
     probe_x = 10;
 
-    // Select the profile side corresponding to the visible marked side.
+    // Same marked location on both sides of the clamp extrusion.
     probe_y = clamp.tube_center_z;
 
     probe_z =
@@ -66,17 +66,18 @@ module hub75_lab_tube_clamp_relief_probe(
         - clamp.tube_center_y
         - ring_center_x;
 
-    color([0.05, 0.90, 0.15, 0.65])
-        translate([
-            probe_x,
-            probe_y,
-            probe_z - depth / 2
-        ])
-            cylinder(
-                r = radius,
-                h = depth,
-                $fn = high_resolution ? 96 : 32
-            );
+    for (side = [-1, 1])
+        color([0.05, 0.90, 0.15, 0.65])
+            translate([
+                side * probe_x,
+                probe_y,
+                probe_z - depth / 2
+            ])
+                cylinder(
+                    r = radius,
+                    h = depth,
+                    $fn = high_resolution ? 96 : 32
+                );
 }
 
 module hub75_lab_tube_clamp_candidate(
