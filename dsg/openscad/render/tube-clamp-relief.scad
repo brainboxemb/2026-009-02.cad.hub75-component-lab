@@ -31,7 +31,7 @@ translate([spacing / 2, 0, 0]) {
 
     hub75_lab_tube_clamp_relief_probe(
         clamp,
-        radius = 10,
+        radius = 5,
         depth = 2,
         high_resolution = true
     );

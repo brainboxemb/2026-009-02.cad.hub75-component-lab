@@ -56,12 +56,10 @@ module hub75_lab_tube_clamp_relief_probe(
     // Clamp extrusion/project-X becomes development-X.  Use the middle of that
     // width so the probe cannot accidentally be interpreted as an end-face
     // feature again.
-    probe_x = 0;
+    probe_x = 10;
 
     // Select the profile side corresponding to the visible marked side.
-    probe_y =
-        clamp.tube_center_z
-        - attach_y;
+    probe_y = clamp.tube_center_z;
 
     probe_z =
         attach_x
