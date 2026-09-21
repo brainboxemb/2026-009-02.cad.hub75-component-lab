@@ -1,3 +1,5 @@
+// Stable before/after evidence for the current clamp-relief candidate.
+
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <../project_components/tube_mount/tube_mount_interface.scad>
 
@@ -8,13 +10,26 @@ clamp = hub75_tube_clamp_create(
     transition_relief_face_depth = 2.0
 );
 
+spacing = 18;
+
 $vpt = [0, -3.5, 10];
 $vpr = [65, 0, 25];
-$vpd = 72;
+$vpd = 115;
 
-hub75_tube_clamp_build(
-    clamp,
-    use_tension_bore = false,
-    high_resolution = true,
-    apply_transition_relief = true
-);
+translate([-spacing / 2, 0, 0])
+    hub75_tube_clamp_build(
+        clamp,
+        part_color = [0.72, 0.72, 0.72, 1],
+        use_tension_bore = false,
+        high_resolution = true,
+        apply_transition_relief = false
+    );
+
+translate([spacing / 2, 0, 0])
+    hub75_tube_clamp_build(
+        clamp,
+        part_color = [0.88, 0.08, 0.05, 1],
+        use_tension_bore = false,
+        high_resolution = true,
+        apply_transition_relief = true
+    );
