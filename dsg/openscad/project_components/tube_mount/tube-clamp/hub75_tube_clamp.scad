@@ -280,17 +280,15 @@ module _hub75_tube_clamp_ring_build(
 }
 
 
-// Shallow round bite at the LOWER transition foot: the sharp corner where the
-// compact sloped transition leaves the flat base / dovetail connection.
+// Shallow round bite at the sharp transition-to-ring attach point.
 //
-// This deliberately does NOT target the upper transition-to-ring attach point.
-// In the reusable clamp's native profile the target vertex is
-// [base_thickness, +/- transition_width/2].
+// The reusable clamp constructs this vertex where transition_depth meets the
+// circular outer profile. Re-derive that exact point here so the relief follows
+// the real geometry instead of the lower transition foot.
 //
 // The cylinders use native Z as their axis. Native Z maps to project X, which is
-// printer Z in the intended side-print orientation. They are intentionally
-// short and applied from both clamp faces, matching the requested small round
-// bite on this side and on the back rather than cutting a full-width tunnel.
+// printer Z in the intended side-print orientation. They stay deliberately
+// short and are applied from both clamp faces.
 module _hub75_tube_clamp_transition_relief_cutter_local(
     clamp,
     high_resolution
@@ -300,10 +298,20 @@ module _hub75_tube_clamp_transition_relief_cutter_local(
     bite = clamp.transition_relief_bite;
     face_depth = clamp.transition_relief_face_depth;
 
-    foot_x = b.base_thickness;
-    foot_y = b.transition_width / 2;
+    outer_r = tube_clamp_outer_radius(b);
+    ring_center_x = b.base_thickness + outer_r;
+    attach_x = min(
+        b.base_thickness + b.transition_depth,
+        ring_center_x + outer_r - b.extra
+    );
+    attach_dx = attach_x - ring_center_x;
+    attach_y = sqrt(max(
+        0.01,
+        outer_r * outer_r - attach_dx * attach_dx
+    ));
+
     cutter_y =
-        foot_y
+        attach_y
         + radius
         - bite;
 
@@ -311,7 +319,7 @@ module _hub75_tube_clamp_transition_relief_cutter_local(
     for (profile_side = [-1, 1])
         for (face = [0, 1])
             translate([
-                foot_x,
+                attach_x,
                 profile_side * cutter_y,
                 face == 0
                     ? -b.extra
