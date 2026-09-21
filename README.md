@@ -10,8 +10,8 @@ The first isolated component is the detachable Ø10 mm tube clamp from parent PR
 Imported baseline: `feature/pr-45-reinforcement-dovetail-clamps` at
 `3db3e89e22c000572283ee4fe2e3e59cb8b34f29`.
 
-The question is deliberately narrow: soften the sharp lower transition-foot edge
-with a local round relief without reshaping the accepted clamp body or dovetail.
+The question is deliberately narrow: soften the sharp local clamp transition
+with a round relief without reshaping the accepted clamp body or dovetail.
 
 ## Fast iteration loop
 
@@ -21,6 +21,24 @@ with a local round relief without reshaping the accepted clamp body or dovetail.
 4. Switch between `baseline`, `relief`, `comparison` and `removed`.
 5. Tune only `relief_radius`, `relief_bite` and `relief_face_depth`.
 6. Use the normal SCAD build only for a candidate worth stable rendered evidence.
+
+## Orientation terminology
+
+The lab uses four fixed terms:
+
+- **native orientation** — the coordinate system owned by the source component
+  or library;
+- **project orientation** — the production/assembly coordinates of the HUB75
+  parent project;
+- **development orientation** — the convenient CAD/lab orientation;
+- **print orientation** — the physical slicer/print-bed orientation.
+
+A **view** is only a camera direction; it does not rotate the geometry.
+
+For the current clamp all lab previews and the STL use the development
+orientation. The dovetail mounting/root plane is parallel to XY and dovetail
+height runs along Z. This is obtained from project orientation by a +90 degree
+rotation around X.
 
 ## Isolation boundary
 
