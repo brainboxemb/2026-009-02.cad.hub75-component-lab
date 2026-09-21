@@ -125,13 +125,18 @@ changes are ported back as a minimal delta and verified there.
 
 ## Generated evidence
 
-After PR #3 is merged, normal lab evidence is published from `main` to
-`prod/bld`. Relevant retained renders include:
+The lab build workflow is intentionally PR-oriented. During an active lab PR,
+generated PNG/STL evidence is published to that PR's temporary
+`dev/pr-N/bld` preview branch.
 
-- `png/tube-clamp-relief.png`;
-- `png/tube-clamp-relief-detail.png`;
-- `png/dovetail-lock-release-comparison.png`;
-- `png/dovetail-lock-release-trapezoid.png`.
+After merge, the normal PR cleanup removes both that preview branch and the
+temporary source branch. This repository does not automatically publish a
+`main` / `prod/bld` snapshot.
 
-The old `dev/pr-3/bld` preview is intentionally temporary and is removed by the
-normal PR cleanup workflow.
+The retained evidence after lab completion is therefore the merged lab source
+plus the promoted production implementations and their own build/verification
+evidence:
+
+- `lib.scad.clamps v0.1.8`;
+- `lib.scad.mechint v0.1.6`;
+- HUB75 parent PR #45.
