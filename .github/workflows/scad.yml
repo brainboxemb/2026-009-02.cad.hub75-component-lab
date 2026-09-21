@@ -13,4 +13,4 @@ jobs:
     uses: brainboxemb/tool.scad-project/.github/workflows/project-build.yml@v0.14.9
     with:
       artifact_name: hub75-component-lab-build
-      publish: false
+      publish: true
