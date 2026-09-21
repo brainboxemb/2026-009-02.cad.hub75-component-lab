@@ -37,8 +37,8 @@ A **view** is only a camera direction; it does not rotate the geometry.
 
 For the current clamp all lab previews and the STL use the development
 orientation. The dovetail mounting/root plane is parallel to XY and dovetail
-height runs along Z. This is obtained from project orientation by a +90 degree
-rotation around X.
+height runs along Z. This is obtained from project orientation by a -90 degree
+rotation around X, leaving the clamp body above the dovetail plane.
 
 ## Isolation boundary
 
