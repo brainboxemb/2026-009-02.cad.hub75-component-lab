@@ -1,0 +1,30 @@
+schema_version: 1
+
+project:
+  name: 2026-009-02.cad.hub75-component-lab
+
+profiles:
+  - type: scad
+    config: project.scad.yml
+
+dependencies:
+  - name: tool.scad-project
+    role: tooling
+    type: git-submodule
+    url: https://github.com/brainboxemb/tool.scad-project.git
+    path: tools/tool.scad-project
+    ref: v0.14.9
+
+  - name: lib.scad.clamps
+    role: external
+    type: git-submodule
+    url: https://github.com/brainboxemb/lib.scad.clamps.git
+    path: dsg/openscad/ext/lib.scad.clamps
+    ref: v0.1.7
+
+  - name: lib.scad.mechint
+    role: external
+    type: git-submodule
+    url: https://github.com/brainboxemb/lib.scad.mechint.git
+    path: dsg/openscad/ext/lib.scad.mechint
+    ref: v0.1.5
