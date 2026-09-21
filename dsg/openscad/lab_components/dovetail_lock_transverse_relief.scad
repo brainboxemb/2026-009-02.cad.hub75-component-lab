@@ -8,6 +8,7 @@
 // is taken through project Y so the native X/Z opening profile is visible.
 
 use <../project_components/tube_mount/tube_mount_interface.scad>
+use <../ext/lib.scad.mechint/openscad/sliding-dovetail/sliding_dovetail.scad>
 
 function hub75_lab_lock_transverse_relief_section_project_y(
     dovetail
