@@ -13,8 +13,8 @@ hub75_lab_tube_clamp_candidate(
     clamp,
     radius = 6,
     bite = 0.4,
-    depth = 3,
-        z_offset = 0,
+    z_height = 4,
+        z_offset = 1,
     use_tension_bore = true,
     high_resolution = true
 );

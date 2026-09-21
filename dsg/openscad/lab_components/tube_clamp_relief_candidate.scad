@@ -43,8 +43,8 @@ module hub75_lab_tube_clamp_relief_cutter(
     clamp,
     radius = 6,
     bite = 0.4,
-    depth = 3,
-    z_offset = 0,
+    z_height = 4,
+    z_offset = 1,
     high_resolution = true
 ) {
     b = clamp.base_clamp;
@@ -52,7 +52,7 @@ module hub75_lab_tube_clamp_relief_cutter(
     assert(radius > 0, "lab relief radius must be > 0");
     assert(bite >= 0 && bite <= radius,
         "lab relief bite must be between 0 and radius");
-    assert(depth > 0, "lab relief depth must be > 0");
+    assert(z_height > 0, "lab relief z_height must be > 0");
 
     outer_r = tube_clamp_outer_radius(b);
     ring_center_x = b.base_thickness + outer_r;
@@ -80,11 +80,11 @@ module hub75_lab_tube_clamp_relief_cutter(
         translate([
             side * cutter_x,
             cutter_y,
-            cutter_z - depth / 2
+            cutter_z - z_height / 2
         ])
             cylinder(
                 r = radius,
-                h = depth,
+                h = z_height,
                 $fn = high_resolution ? 96 : 32
             );
 }
@@ -93,8 +93,8 @@ module hub75_lab_tube_clamp_relief_probe(
     clamp,
     radius = 6,
     bite = 0.4,
-    depth = 3,
-    z_offset = 0,
+    z_height = 4,
+    z_offset = 1,
     high_resolution = true
 ) {
     color([0.05, 0.90, 0.15, 0.65])
@@ -102,7 +102,7 @@ module hub75_lab_tube_clamp_relief_probe(
             clamp,
             radius = radius,
             bite = bite,
-            depth = depth,
+            z_height = z_height,
             z_offset = z_offset,
             high_resolution = high_resolution
         );
@@ -112,8 +112,8 @@ module hub75_lab_tube_clamp_candidate(
     clamp,
     radius = 6,
     bite = 0.4,
-    depth = 3,
-    z_offset = 0,
+    z_height = 4,
+    z_offset = 1,
     use_tension_bore = false,
     high_resolution = true,
     part_color = [0.88, 0.08, 0.05, 1]
@@ -131,7 +131,7 @@ module hub75_lab_tube_clamp_candidate(
                 clamp,
                 radius = radius,
                 bite = bite,
-                depth = depth,
+                z_height = z_height,
                 z_offset = z_offset,
                 high_resolution = high_resolution
             );
