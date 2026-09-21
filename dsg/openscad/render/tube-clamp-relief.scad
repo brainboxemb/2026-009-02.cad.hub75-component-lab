@@ -1,4 +1,4 @@
-// Stable before/after evidence in development orientation.
+// Target calibration: baseline left, proposed cutter position right.
 
 use <../lab_orientation.scad>
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
@@ -22,12 +22,17 @@ translate([-spacing / 2, 0, 0])
         high_resolution = true
     );
 
-translate([spacing / 2, 0, 0])
-    hub75_lab_tube_clamp_candidate(
+translate([spacing / 2, 0, 0]) {
+    hub75_lab_tube_clamp_baseline(
         clamp,
-        radius = 10,
-        bite = 1,
-        depth = 2,
         use_tension_bore = false,
         high_resolution = true
     );
+
+    hub75_lab_tube_clamp_relief_probe(
+        clamp,
+        radius = 10,
+        depth = 2,
+        high_resolution = true
+    );
+}
