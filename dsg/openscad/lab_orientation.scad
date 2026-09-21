@@ -27,3 +27,11 @@ module hub75_lab_development_orientation() {
     rotate([-90, 0, 0])
         children();
 }
+
+
+// Standard development camera.  Keep camera semantics separate from geometry
+// orientation: changing a view must not change the model coordinate system.
+function hub75_lab_development_camera_target() = [0, 10, 7.5];
+function hub75_lab_development_camera_rotation() = [55, 0, 35];
+function hub75_lab_development_camera_distance_single() = 78;
+function hub75_lab_development_camera_distance_comparison() = 120;

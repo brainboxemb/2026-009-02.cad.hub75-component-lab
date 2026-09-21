@@ -20,6 +20,13 @@ relief_depth = 2.0;
 high_resolution = false;
 comparison_spacing = 18;
 
+$vpt = hub75_lab_development_camera_target();
+$vpr = hub75_lab_development_camera_rotation();
+$vpd =
+    view == "comparison"
+        ? hub75_lab_development_camera_distance_comparison()
+        : hub75_lab_development_camera_distance_single();
+
 clamp = hub75_tube_clamp_create(
     dovetail = hub75_tube_mount_dovetail_create_for_size(profile)
 );

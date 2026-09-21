@@ -9,7 +9,9 @@ clamp = hub75_tube_clamp_create(
 
 spacing = 18;
 
-$vpr = [55, 0, 35];
+$vpt = hub75_lab_development_camera_target();
+$vpr = hub75_lab_development_camera_rotation();
+$vpd = hub75_lab_development_camera_distance_comparison();
 
 translate([-spacing / 2, 0, 0])
     hub75_lab_tube_clamp_baseline(

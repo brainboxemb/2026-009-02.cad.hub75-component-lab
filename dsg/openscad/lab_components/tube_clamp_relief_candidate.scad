@@ -53,18 +53,18 @@ module hub75_lab_tube_clamp_relief_cutter(
     //   x = base_thickness
     //   y = +/- transition_width/2
     //
-    // after project + development transforms:
+    // after project + upright development transforms:
     //   X = +/- clamp_width/2  (the two clamp end faces)
-    //   Y = native profile Y - tube_center_z
-    //   Z = tube_center_y + outer radius
+    //   Y = tube_center_z - native profile Y
+    //   Z = -tube_center_y - outer radius
     //
     // Put the R10 centre directly on the clamp end-face line in X, but mostly
     // outside the profile in Y.  The circle therefore enters the material by
     // only 'bite' at the marked transition-foot corner.  The cylinder is low
     // in Z, matching the user's marked development-orientation sketch.
     target_z =
-        clamp.tube_center_y
-        + outer_r;
+        -clamp.tube_center_y
+        - outer_r;
 
     for (face_side = [-1, 1])
         for (profile_side = [-1, 1]) {
@@ -72,9 +72,9 @@ module hub75_lab_tube_clamp_relief_cutter(
                 face_side
                 * b.clamp_width / 2;
             target_y =
-                profile_side
-                * b.transition_width / 2
-                - clamp.tube_center_z;
+                clamp.tube_center_z
+                - profile_side
+                    * b.transition_width / 2;
             cutter_y =
                 target_y
                 + profile_side

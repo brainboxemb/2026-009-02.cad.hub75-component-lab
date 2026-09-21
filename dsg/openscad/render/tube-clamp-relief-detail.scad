@@ -8,7 +8,9 @@ clamp = hub75_tube_clamp_create(
     dovetail = hub75_tube_mount_dovetail_create_for_size("medium")
 );
 
-$vpr = [55, 0, 35];
+$vpt = hub75_lab_development_camera_target();
+$vpr = hub75_lab_development_camera_rotation();
+$vpd = hub75_lab_development_camera_distance_single();
 
 hub75_lab_tube_clamp_candidate(
     clamp,
