@@ -46,25 +46,39 @@ module hub75_lab_tube_clamp_relief_cutter(
     assert(depth > 0, "lab relief depth must be > 0");
 
     outer_r = tube_clamp_outer_radius(b);
+    ring_center_x = b.base_thickness + outer_r;
+    attach_x = min(
+        b.base_thickness + b.transition_depth,
+        ring_center_x + outer_r - b.extra
+    );
+    attach_dx = attach_x - ring_center_x;
+    attach_y = sqrt(max(
+        0.01,
+        outer_r * outer_r - attach_dx * attach_dx
+    ));
 
-    // Development-coordinate location of the lower transition foot:
+    // Development-coordinate target = the sharp transition -> ring corner
+    // highlighted in the user's green markup.
     //
-    // native profile foot:
-    //   x = base_thickness
-    //   y = +/- transition_width/2
+    // Native attach point:
+    //   x = attach_x
+    //   y = +/- attach_y
     //
-    // after project + upright development transforms:
-    //   X = +/- clamp_width/2  (the two clamp end faces)
-    //   Y = tube_center_z - native profile Y
-    //   Z = -tube_center_y - outer radius
-    //
-    // Put the R10 centre directly on the clamp end-face line in X, but mostly
-    // outside the profile in Y.  The circle therefore enters the material by
-    // only 'bite' at the marked transition-foot corner.  The cylinder is low
-    // in Z, matching the user's marked development-orientation sketch.
+    // Upright development coordinates:
+    //   X = +/- clamp_width/2
+    //   Y = tube_center_z - native_y
+    //   Z = native_x - (tube_center_y + ring_center_x)
     target_z =
-        -clamp.tube_center_y
-        - outer_r;
+        attach_x
+        - clamp.tube_center_y
+        - ring_center_x;
+
+    // Keep most of the R10 circle outside BOTH intersecting side boundaries.
+    // The centre is moved along the outward 45-degree bisector.  Its radial
+    // distance from the marked corner is radius-bite, so the maximum local
+    // penetration at that corner is approximately 'bite'.
+    radial_offset = radius - bite;
+    axis_offset = radial_offset / sqrt(2);
 
     for (face_side = [-1, 1])
         for (profile_side = [-1, 1]) {
@@ -73,15 +87,17 @@ module hub75_lab_tube_clamp_relief_cutter(
                 * b.clamp_width / 2;
             target_y =
                 clamp.tube_center_z
-                - profile_side
-                    * b.transition_width / 2;
+                - profile_side * attach_y;
+
+            cutter_x =
+                target_x
+                + face_side * axis_offset;
             cutter_y =
                 target_y
-                + profile_side
-                    * (radius - bite);
+                - profile_side * axis_offset;
 
             translate([
-                target_x,
+                cutter_x,
                 cutter_y,
                 target_z - depth / 2
             ])
