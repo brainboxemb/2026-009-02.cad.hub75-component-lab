@@ -12,6 +12,10 @@ use <lab_components/tube_clamp_relief_candidate.scad>
 /* [Lab] */
 experiment = "lock_release"; // [relief,tension,lock_release]
 
+/* [Display] */
+mi_orientation = "design"; // [design,project,print]
+mi_view = "iso"; // [iso,front,side,top]
+
 /* [Profile] */
 profile = "medium"; // [small,medium,large]
 
@@ -32,7 +36,7 @@ tension_diameter = 9.6;
 tension_comparison_spacing = 18;
 
 /* [Male lock release] */
-lock_release_view = "single"; // [single,comparison]
+lock_release_mode = "single"; // [single,comparison]
 lock_release_shape = "trapezoid"; // [rectangular,trapezoid]
 lock_release_taper_angle = 45;
 lock_release_comparison_spacing = 28;
@@ -58,7 +62,8 @@ module relief_baseline(part_color) {
         hub75_clamp,
         use_tension_bore = use_tension_bore,
         high_resolution = high_resolution,
-        part_color = part_color
+        part_color = part_color,
+        orientation = mi_orientation
     );
 }
 
@@ -171,7 +176,7 @@ module lock_release_clip(
 }
 
 module lock_release_experiment() {
-    if (lock_release_view == "comparison") {
+    if (lock_release_mode == "comparison") {
         translate([
             -lock_release_comparison_spacing / 2,
             0,
@@ -203,36 +208,27 @@ module lock_release_experiment() {
 // Camera
 // ----------------------------------------------------------------------
 
-if (experiment == "relief") {
-    $vpt = hub75_lab_development_camera_target();
-    $vpr = hub75_lab_development_camera_rotation();
-    $vpd =
-        view == "comparison"
-            ? hub75_lab_development_camera_distance_comparison()
-            : hub75_lab_development_camera_distance_single();
+$vpt = hub75_lab_camera_target(mi_orientation);
+$vpr = hub75_lab_camera_rotation(mi_view);
 
+$vpd =
+    experiment == "lock_release"
+        && lock_release_mode == "comparison"
+            ? hub75_lab_camera_distance_comparison(
+                mi_orientation
+            )
+            : experiment == "relief"
+                && view == "comparison"
+                    ? hub75_lab_camera_distance_comparison(
+                        "design"
+                    )
+                    : hub75_lab_camera_distance_single(
+                        mi_orientation
+                    );
+
+if (experiment == "relief")
     relief_experiment();
-} else if (experiment == "tension") {
-    $vpt = [
-        base_clamp.base_thickness
-            + tube_clamp_outer_radius(base_clamp),
-        0,
-        base_clamp.clamp_width / 2
-    ];
-    $vpr = [0, 0, 0];
-    $vpd =
-        tension_view == "comparison"
-            ? 75
-            : 55;
-
+else if (experiment == "tension")
     tension_experiment();
-} else {
-    $vpt = hub75_lab_development_camera_target();
-    $vpr = hub75_lab_development_camera_rotation();
-    $vpd =
-        lock_release_view == "comparison"
-            ? 145
-            : hub75_lab_development_camera_distance_single();
-
+else
     lock_release_experiment();
-}

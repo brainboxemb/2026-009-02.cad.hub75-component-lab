@@ -27,9 +27,10 @@ module hub75_lab_tube_clamp_baseline(
     clamp,
     use_tension_bore = false,
     high_resolution = true,
-    part_color = [0.72, 0.72, 0.72, 1]
+    part_color = [0.72, 0.72, 0.72, 1],
+    orientation = "design"
 ) {
-    hub75_lab_development_orientation()
+    hub75_lab_orientation(orientation)
         hub75_tube_clamp_build(
             clamp,
             part_color = part_color,
@@ -124,7 +125,8 @@ module hub75_lab_tube_clamp_candidate(
                 clamp,
                 use_tension_bore = use_tension_bore,
                 high_resolution = high_resolution,
-                part_color = [1, 1, 1, 1]
+                part_color = [1, 1, 1, 1],
+                orientation = "design"
             );
 
             hub75_lab_tube_clamp_relief_cutter(
