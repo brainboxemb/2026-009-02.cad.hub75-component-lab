@@ -13,7 +13,7 @@
 //   bite        = 0.4 mm
 //
 // Therefore the cylinder centres sit at:
-//   abs(X) = clamp_width/2 + radius - bite = 0.40 mm
+//   abs(X) = clamp_width/2 + radius - bite = 11.6 mm
 //
 // Once accepted, only this geometric rule is translated back into the parent
 // project.
@@ -52,7 +52,7 @@ module hub75_lab_tube_clamp_relief_cutter(
     assert(radius > 0, "lab relief radius must be > 0");
     assert(bite >= 0 && bite <= radius,
         "lab relief bite must be between 0 and radius");
-    assert(z_height > 0, "lab relief z_height must be > 0");
+    assert(z_height > 0, "lab relief z height must be > 0");
 
     outer_r = tube_clamp_outer_radius(b);
     ring_center_x = b.base_thickness + outer_r;
