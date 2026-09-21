@@ -1,17 +1,16 @@
 // HUB75 component-lab workbench.
 //
-// Use 'experiment' to switch between the current relief work and the released
-// tube-clamp tension behavior.
+// The active lock-release experiment uses the actual baseline detachable clamp.
+// Only the male lock-release opening profile changes between candidates.
 
 use <lab_orientation.scad>
 use <ext/lib.scad.clamps/openscad/tube-clamp/tube_clamp.scad>
 use <project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <project_components/tube_mount/tube_mount_interface.scad>
 use <lab_components/tube_clamp_relief_candidate.scad>
-use <lab_components/dovetail_lock_transverse_relief.scad>
 
 /* [Lab] */
-experiment = "lock_relief"; // [relief,tension,lock_relief]
+experiment = "lock_release"; // [relief,tension,lock_release]
 
 /* [Profile] */
 profile = "medium"; // [small,medium,large]
@@ -32,11 +31,11 @@ tension_display = "profile_2d"; // [profile_2d,model_3d]
 tension_diameter = 9.6;
 tension_comparison_spacing = 18;
 
-/* [Lock transverse relief] */
-lock_view = "section_comparison"; // [section_comparison,rectangular,trapezoid]
-lock_top_length = 0.4;
-lock_section_thickness = 0.45;
-lock_comparison_spacing = 18;
+/* [Male lock release] */
+lock_release_view = "single"; // [single,comparison]
+lock_release_shape = "trapezoid"; // [rectangular,trapezoid]
+lock_release_top_depth = 0.30;
+lock_release_comparison_spacing = 28;
 
 /* [Preview] */
 high_resolution = false;
@@ -98,10 +97,6 @@ module relief_experiment() {
 
 // ----------------------------------------------------------------------
 // Tension experiment
-//
-// lib.scad.clamps v0.1.8 shrinks both inner and outer radii for tension
-// geometry, preserving wall_thickness while keeping the nominal ring centre
-// fixed.  profile_2d makes that relationship directly inspectable.
 // ----------------------------------------------------------------------
 
 module _tension_display() {
@@ -147,58 +142,63 @@ module tension_experiment() {
 }
 
 // ----------------------------------------------------------------------
-// Lock transverse-relief experiment
+// Male lock-release experiment
 // ----------------------------------------------------------------------
 
-module lock_relief_section(
+function lock_release_dovetail(shape) =
+    hub75_tube_mount_dovetail_create_for_size(
+        profile,
+        lock_release_shape = shape,
+        lock_release_top_depth =
+            lock_release_top_depth
+    );
+
+function lock_release_clamp(shape) =
+    hub75_tube_clamp_create(
+        tension_diameter = tension_diameter,
+        dovetail = lock_release_dovetail(shape)
+    );
+
+module lock_release_clip(
     shape,
     part_color
 ) {
-    color(part_color)
-        hub75_lab_print_orientation()
-            hub75_lab_lock_transverse_relief_section(
-                size = profile,
-                shape = shape,
-                top_length = lock_top_length,
-                section_thickness =
-                    lock_section_thickness
-            );
+    hub75_lab_tube_clamp_baseline(
+        lock_release_clamp(shape),
+        use_tension_bore = false,
+        high_resolution = high_resolution,
+        part_color = part_color
+    );
 }
 
-module lock_relief_experiment() {
-    if (lock_view == "rectangular")
-        lock_relief_section(
-            "rectangular",
-            [0.72, 0.72, 0.72, 1]
-        );
-    else if (lock_view == "trapezoid")
-        lock_relief_section(
-            "trapezoid",
-            [0.88, 0.08, 0.05, 1]
-        );
-    else {
+module lock_release_experiment() {
+    if (lock_release_view == "comparison") {
         translate([
-            -lock_comparison_spacing / 2,
+            -lock_release_comparison_spacing / 2,
             0,
             0
         ])
-            lock_relief_section(
+            lock_release_clip(
                 "rectangular",
                 [0.72, 0.72, 0.72, 1]
             );
 
         translate([
-            lock_comparison_spacing / 2,
+            lock_release_comparison_spacing / 2,
             0,
             0
         ])
-            lock_relief_section(
+            lock_release_clip(
                 "trapezoid",
                 [0.88, 0.08, 0.05, 1]
             );
+    } else {
+        lock_release_clip(
+            lock_release_shape,
+            [0.88, 0.08, 0.05, 1]
+        );
     }
 }
-
 
 // ----------------------------------------------------------------------
 // Camera
@@ -228,14 +228,12 @@ if (experiment == "relief") {
 
     tension_experiment();
 } else {
-    // Right-side print-oriented inspection: print Y horizontal, print Z
-    // vertical. The thin section exposes the transverse opening directly.
-    $vpt = [0, 0, 0];
-    $vpr = [90, 0, 0];
+    $vpt = hub75_lab_development_camera_target();
+    $vpr = hub75_lab_development_camera_rotation();
     $vpd =
-        lock_view == "section_comparison"
-            ? 78
-            : 58;
+        lock_release_view == "comparison"
+            ? 145
+            : hub75_lab_development_camera_distance_single();
 
-    lock_relief_experiment();
+    lock_release_experiment();
 }

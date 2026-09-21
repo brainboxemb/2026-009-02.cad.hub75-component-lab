@@ -27,4 +27,4 @@ dependencies:
     type: git-submodule
     url: https://github.com/brainboxemb/lib.scad.mechint.git
     path: dsg/openscad/ext/lib.scad.mechint
-    ref: 88a00e535ed750fca9532aa622627ec86299f3a0
+    ref: 73e220a40e5e54675d54130b5d2c7be327e4b71b
