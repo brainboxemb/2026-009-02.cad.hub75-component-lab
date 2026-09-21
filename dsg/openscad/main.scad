@@ -45,63 +45,79 @@ c_lock_release_comparison_spacing_mm = 28;
 c_high_resolution = false;
 c_comparison_spacing_mm = 18;
 
-hub75_clamp = hub75_tube_clamp_create(
-    tension_diameter = d_tension_diameter_mm,
-    dovetail = hub75_tube_mount_dovetail_create_for_size(d_profile)
-);
+_hub75_clamp =
+    hub75_tube_clamp_create(
+        tension_diameter = d_tension_diameter_mm,
+        dovetail =
+            hub75_tube_mount_dovetail_create_for_size(
+                d_profile
+            )
+    );
 
-base_clamp = hub75_clamp.base_clamp;
-use_tension_bore = d_bore == "tension";
+_base_clamp = _hub75_clamp.base_clamp;
+_use_tension_bore = d_bore == "tension";
 
 // ----------------------------------------------------------------------
-// Relief c_experiment
+// Relief experiment
 // ----------------------------------------------------------------------
 
-module relief_baseline(part_color) {
+module _relief_baseline(part_color) {
     hub75_lab_tube_clamp_baseline(
-        hub75_clamp,
-        use_tension_bore = use_tension_bore,
+        _hub75_clamp,
+        use_tension_bore = _use_tension_bore,
         high_resolution = c_high_resolution,
         part_color = part_color,
         orientation = "design"
     );
 }
 
-module relief_candidate(part_color) {
+module _relief_candidate(part_color) {
     hub75_lab_tube_clamp_candidate(
-        hub75_clamp,
+        _hub75_clamp,
         radius = d_relief_radius_mm,
         bite = d_relief_bite_mm,
         z_height = d_relief_z_height_mm,
         z_offset = d_relief_z_offset_mm,
-        use_tension_bore = use_tension_bore,
+        use_tension_bore = _use_tension_bore,
         high_resolution = c_high_resolution,
         part_color = part_color
     );
 }
 
-module relief_experiment() {
+module _relief_experiment() {
     if (c_relief_view == "baseline")
-        relief_baseline([0.72, 0.72, 0.72, 1]);
+        _relief_baseline([0.72, 0.72, 0.72, 1]);
     else if (c_relief_view == "relief")
-        relief_candidate([0.88, 0.08, 0.05, 1]);
+        _relief_candidate([0.88, 0.08, 0.05, 1]);
     else if (c_relief_view == "removed")
         color([0.92, 0.12, 0.05, 1])
             difference() {
-                relief_baseline([1, 1, 1, 1]);
-                relief_candidate([1, 1, 1, 1]);
+                _relief_baseline([1, 1, 1, 1]);
+                _relief_candidate([1, 1, 1, 1]);
             }
     else {
-        translate([-c_comparison_spacing_mm / 2, 0, 0])
-            relief_baseline([0.72, 0.72, 0.72, 1]);
+        translate([
+            -c_comparison_spacing_mm / 2,
+            0,
+            0
+        ])
+            _relief_baseline(
+                [0.72, 0.72, 0.72, 1]
+            );
 
-        translate([c_comparison_spacing_mm / 2, 0, 0])
-            relief_candidate([0.88, 0.08, 0.05, 1]);
+        translate([
+            c_comparison_spacing_mm / 2,
+            0,
+            0
+        ])
+            _relief_candidate(
+                [0.88, 0.08, 0.05, 1]
+            );
     }
 }
 
 // ----------------------------------------------------------------------
-// Tension c_experiment
+// Tension experiment
 // ----------------------------------------------------------------------
 
 module _tension_display() {
@@ -112,64 +128,80 @@ module _tension_display() {
         children();
 }
 
-module tension_functional(part_color) {
+module _tension_functional(part_color) {
     color(part_color)
         _tension_display()
             tube_clamp_build(
-                base_clamp,
+                _base_clamp,
                 use_tension_bore = false,
                 high_resolution = c_high_resolution
             );
 }
 
-module tension_active(part_color) {
+module _tension_active(part_color) {
     color(part_color)
         _tension_display()
             tube_clamp_build(
-                base_clamp,
+                _base_clamp,
                 use_tension_bore = true,
                 high_resolution = c_high_resolution
             );
 }
 
-module tension_experiment() {
+module _tension_experiment() {
     if (c_tension_view == "functional")
-        tension_functional([0.72, 0.72, 0.72, 1]);
+        _tension_functional(
+            [0.72, 0.72, 0.72, 1]
+        );
     else if (c_tension_view == "tension")
-        tension_active([0.10, 0.45, 0.85, 1]);
+        _tension_active(
+            [0.10, 0.45, 0.85, 1]
+        );
     else {
-        translate([-c_tension_comparison_spacing_mm / 2, 0, 0])
-            tension_functional([0.72, 0.72, 0.72, 1]);
+        translate([
+            -c_tension_comparison_spacing_mm / 2,
+            0,
+            0
+        ])
+            _tension_functional(
+                [0.72, 0.72, 0.72, 1]
+            );
 
-        translate([c_tension_comparison_spacing_mm / 2, 0, 0])
-            tension_active([0.10, 0.45, 0.85, 1]);
+        translate([
+            c_tension_comparison_spacing_mm / 2,
+            0,
+            0
+        ])
+            _tension_active(
+                [0.10, 0.45, 0.85, 1]
+            );
     }
 }
 
 // ----------------------------------------------------------------------
-// Male lock-release c_experiment
+// Male lock-release experiment
 // ----------------------------------------------------------------------
 
-function lock_release_dovetail(shape) =
+function _lock_release_dovetail(shape) =
     hub75_tube_mount_dovetail_create_for_size(
         d_profile,
         lock_release_shape = shape,
-        lock_release_taper_angle =
+        lock_release_taper_angle_deg =
             d_lock_release_taper_angle_deg
     );
 
-function lock_release_clamp(shape) =
+function _lock_release_clamp(shape) =
     hub75_tube_clamp_create(
-        d_tension_diameter_mm = d_tension_diameter_mm,
-        dovetail = lock_release_dovetail(shape)
+        tension_diameter = d_tension_diameter_mm,
+        dovetail = _lock_release_dovetail(shape)
     );
 
-module lock_release_clip(
+module _lock_release_clip(
     shape,
     part_color
 ) {
     hub75_lab_tube_clamp_baseline(
-        lock_release_clamp(shape),
+        _lock_release_clamp(shape),
         use_tension_bore = false,
         high_resolution = c_high_resolution,
         part_color = part_color,
@@ -177,14 +209,14 @@ module lock_release_clip(
     );
 }
 
-module lock_release_experiment() {
+module _lock_release_experiment() {
     if (c_lock_release_mode == "comparison") {
         translate([
             -c_lock_release_comparison_spacing_mm / 2,
             0,
             0
         ])
-            lock_release_clip(
+            _lock_release_clip(
                 "rectangular",
                 [0.72, 0.72, 0.72, 1]
             );
@@ -194,12 +226,12 @@ module lock_release_experiment() {
             0,
             0
         ])
-            lock_release_clip(
+            _lock_release_clip(
                 "trapezoid",
                 [0.88, 0.08, 0.05, 1]
             );
     } else {
-        lock_release_clip(
+        _lock_release_clip(
             d_lock_release_shape,
             [0.88, 0.08, 0.05, 1]
         );
@@ -229,8 +261,8 @@ $vpd =
                     );
 
 if (c_experiment == "relief")
-    relief_experiment();
+    _relief_experiment();
 else if (c_experiment == "tension")
-    tension_experiment();
+    _tension_experiment();
 else
-    lock_release_experiment();
+    _lock_release_experiment();
