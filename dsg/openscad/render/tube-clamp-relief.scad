@@ -28,6 +28,7 @@ translate([spacing / 2, 0, 0])
         radius = 6,
         bite = 0.4,
         depth = 3,
+        z_offset = 0,
         use_tension_bore = false,
         high_resolution = true
     );

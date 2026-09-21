@@ -23,7 +23,8 @@ bore = "functional"; // [functional,tension]
 /* [Transition relief] */
 relief_radius = 6.0;
 relief_bite = 0.4;
-relief_depth = 3.0;
+relief_z_depth = 3.0;
+relief_z_offset = 0.0;
 
 /* [Tension experiment] */
 tension_view = "comparison"; // [functional,current_tension,constant_wall_tension,comparison]
@@ -61,7 +62,8 @@ module relief_candidate(part_color) {
         hub75_clamp,
         radius = relief_radius,
         bite = relief_bite,
-        depth = relief_depth,
+        depth = relief_z_depth,
+        z_offset = relief_z_offset,
         use_tension_bore = use_tension_bore,
         high_resolution = high_resolution,
         part_color = part_color

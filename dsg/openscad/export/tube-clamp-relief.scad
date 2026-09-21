@@ -14,6 +14,7 @@ hub75_lab_tube_clamp_candidate(
     radius = 6,
     bite = 0.4,
     depth = 3,
+        z_offset = 0,
     use_tension_bore = true,
     high_resolution = true
 );

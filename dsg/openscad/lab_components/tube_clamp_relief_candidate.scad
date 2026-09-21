@@ -44,6 +44,7 @@ module hub75_lab_tube_clamp_relief_cutter(
     radius = 6,
     bite = 0.4,
     depth = 3,
+    z_offset = 0,
     high_resolution = true
 ) {
     b = clamp.base_clamp;
@@ -71,7 +72,8 @@ module hub75_lab_tube_clamp_relief_cutter(
     cutter_z =
         attach_x
         - clamp.tube_center_y
-        - ring_center_x;
+        - ring_center_x
+        + z_offset;
 
     // Same shallow local cut on both clamp sides.
     for (side = [-1, 1])
@@ -92,6 +94,7 @@ module hub75_lab_tube_clamp_relief_probe(
     radius = 6,
     bite = 0.4,
     depth = 3,
+    z_offset = 0,
     high_resolution = true
 ) {
     color([0.05, 0.90, 0.15, 0.65])
@@ -100,6 +103,7 @@ module hub75_lab_tube_clamp_relief_probe(
             radius = radius,
             bite = bite,
             depth = depth,
+            z_offset = z_offset,
             high_resolution = high_resolution
         );
 }
@@ -109,6 +113,7 @@ module hub75_lab_tube_clamp_candidate(
     radius = 6,
     bite = 0.4,
     depth = 3,
+    z_offset = 0,
     use_tension_bore = false,
     high_resolution = true,
     part_color = [0.88, 0.08, 0.05, 1]
@@ -127,6 +132,7 @@ module hub75_lab_tube_clamp_candidate(
                 radius = radius,
                 bite = bite,
                 depth = depth,
+                z_offset = z_offset,
                 high_resolution = high_resolution
             );
         }

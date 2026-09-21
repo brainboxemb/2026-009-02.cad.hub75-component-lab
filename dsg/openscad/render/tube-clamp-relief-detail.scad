@@ -19,6 +19,7 @@ hub75_lab_tube_clamp_candidate(
     radius = 6,
     bite = 0.4,
     depth = 3,
+        z_offset = 0,
     use_tension_bore = false,
     high_resolution = true,
     part_color = [0.72, 0.72, 0.72, 1]
@@ -38,6 +39,7 @@ color([0.90, 0.08, 0.05, 1])
             radius = 6,
             bite = 0.4,
             depth = 3,
+        z_offset = 0,
             use_tension_bore = false,
             high_resolution = true,
             part_color = [1, 1, 1, 1]
