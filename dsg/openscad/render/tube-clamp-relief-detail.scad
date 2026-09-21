@@ -1,4 +1,4 @@
-// Close-up showing only the material removed by the local round relief.
+// Close-up: resulting clamp in grey, removed relief volume in red.
 
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <../project_components/tube_mount/tube_mount_interface.scad>
@@ -20,12 +20,14 @@ module clamp_geometry(apply_relief, part_color) {
     );
 }
 
-$vpt = [0, -4.5, 10];
-$vpr = [88, 0, 0];
-$vpd = 54;
+$vpt = [0, -3.5, 10];
+$vpr = [65, 0, 25];
+$vpd = 72;
 
-clamp_geometry(false, [0.72, 0.72, 0.72, 0.35]);
+// Final candidate.
+clamp_geometry(true, [0.72, 0.72, 0.72, 1]);
 
+// Material present in the baseline but removed by the candidate relief.
 color([0.90, 0.08, 0.05, 1])
     difference() {
         clamp_geometry(false, [1, 1, 1, 1]);
