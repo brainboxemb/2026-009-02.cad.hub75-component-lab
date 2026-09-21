@@ -1,8 +1,10 @@
-// Compare tube-clamp tension semantics.
+// Profile comparison of tube-clamp tension semantics.
 //
 // Left   = functional geometry
-// Middle = current lib.scad.clamps tension behavior (smaller bore only)
-// Right  = proposed tension behavior (inner + outer shrink, wall stays constant)
+// Middle = current tension behavior (smaller bore only)
+// Right  = proposed constant-wall tension behavior
+//
+// Camera looks exactly along clamp-width Z to remove perspective ambiguity.
 
 use <../ext/lib.scad.clamps/openscad/tube-clamp/tube_clamp.scad>
 use <../lab_components/tube_clamp_constant_wall.scad>
@@ -21,10 +23,13 @@ clamp = tube_clamp_create(
 );
 
 spacing = 18;
+center_x =
+    clamp.base_thickness
+    + tube_clamp_outer_radius(clamp);
 
-$vpr = [65, 0, 35];
-$vpt = [9, 0, 6];
-$vpd = 115;
+$vpr = [0, 0, 0];
+$vpt = [center_x, 0, clamp.clamp_width / 2];
+$vpd = 90;
 
 translate([-spacing, 0, 0])
     color([0.72, 0.72, 0.72, 1])
