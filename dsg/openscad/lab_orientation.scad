@@ -17,12 +17,13 @@
 //
 // Current clamp conversion:
 //   project X -> development X
-//   project Y -> development Z
-//   project Z -> development -Y
+//   project Y -> development -Z
+//   project Z -> development Y
 //
-// This is a +90 degree rotation around project X.
+// This is a -90 degree rotation around project X.  It keeps the dovetail
+// mounting/root plane parallel to XY with the clamp body above that plane.
 
 module hub75_lab_development_orientation() {
-    rotate([90, 0, 0])
+    rotate([-90, 0, 0])
         children();
 }
