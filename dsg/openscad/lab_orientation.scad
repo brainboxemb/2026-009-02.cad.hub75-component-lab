@@ -35,3 +35,12 @@ function hub75_lab_development_camera_target() = [0, 10, 7.5];
 function hub75_lab_development_camera_rotation() = [55, 0, 35];
 function hub75_lab_development_camera_distance_single() = 78;
 function hub75_lab_development_camera_distance_comparison() = 120;
+
+// Print orientation for the detachable clamp / dovetail family.
+//
+// Project X (tube axis) becomes print +Z, matching the intended side print.
+// Project Y remains print Y; project Z becomes print -X.
+module hub75_lab_print_orientation() {
+    rotate([0, -90, 0])
+        children();
+}

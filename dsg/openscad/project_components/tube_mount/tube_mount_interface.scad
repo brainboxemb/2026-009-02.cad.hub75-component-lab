@@ -93,7 +93,9 @@ function hub75_tube_mount_lock_spring_thickness(
 function hub75_tube_mount_dovetail_create(
     host_depth = 3,
     dovetail_height = undef,
-    entry_slot_length = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LENGTH
+    entry_slot_length = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LENGTH,
+    lock_spring_transverse_relief_shape = "rectangular",
+    lock_spring_transverse_relief_angle = 45
 ) =
     let(
         active_dovetail_height =
@@ -131,18 +133,28 @@ function hub75_tube_mount_dovetail_create(
         lock_spring_hinge_length = hinge_length,
         lock_spring_hinge_thickness =
             _HUB75_TUBE_MOUNT_LOCK_HINGE_THICKNESS,
+        lock_spring_transverse_relief_shape =
+            lock_spring_transverse_relief_shape,
+        lock_spring_transverse_relief_angle =
+            lock_spring_transverse_relief_angle,
         lock_cut_back_clearance = false,
         lock_back_clearance = 0
     );
 
 function hub75_tube_mount_dovetail_create_for_size(
     size,
-    entry_slot_length = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LENGTH
+    entry_slot_length = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LENGTH,
+    lock_spring_transverse_relief_shape = "rectangular",
+    lock_spring_transverse_relief_angle = 45
 ) =
     hub75_tube_mount_dovetail_create(
         host_depth = hub75_tube_mount_host_depth_for_size(size),
         dovetail_height = hub75_tube_mount_dovetail_height_for_size(size),
-        entry_slot_length = entry_slot_length
+        entry_slot_length = entry_slot_length,
+        lock_spring_transverse_relief_shape =
+            lock_spring_transverse_relief_shape,
+        lock_spring_transverse_relief_angle =
+            lock_spring_transverse_relief_angle
     );
 
 function hub75_tube_mount_dovetail_angle(dovetail) =

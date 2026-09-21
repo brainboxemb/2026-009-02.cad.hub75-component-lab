@@ -8,9 +8,10 @@ use <ext/lib.scad.clamps/openscad/tube-clamp/tube_clamp.scad>
 use <project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <project_components/tube_mount/tube_mount_interface.scad>
 use <lab_components/tube_clamp_relief_candidate.scad>
+use <lab_components/dovetail_lock_transverse_relief.scad>
 
 /* [Lab] */
-experiment = "relief"; // [relief,tension]
+experiment = "lock_relief"; // [relief,tension,lock_relief]
 
 /* [Profile] */
 profile = "medium"; // [small,medium,large]
@@ -30,6 +31,12 @@ tension_view = "comparison"; // [functional,tension,comparison]
 tension_display = "profile_2d"; // [profile_2d,model_3d]
 tension_diameter = 9.6;
 tension_comparison_spacing = 18;
+
+/* [Lock transverse relief] */
+lock_view = "section_comparison"; // [section_comparison,rectangular,trapezoid]
+lock_angle = 45;
+lock_section_thickness = 0.45;
+lock_comparison_spacing = 9;
 
 /* [Preview] */
 high_resolution = false;
@@ -140,6 +147,60 @@ module tension_experiment() {
 }
 
 // ----------------------------------------------------------------------
+// Lock transverse-relief experiment
+// ----------------------------------------------------------------------
+
+module lock_relief_section(
+    shape,
+    part_color
+) {
+    color(part_color)
+        hub75_lab_print_orientation()
+            hub75_lab_lock_transverse_relief_section(
+                size = profile,
+                shape = shape,
+                angle = lock_angle,
+                section_thickness =
+                    lock_section_thickness
+            );
+}
+
+module lock_relief_experiment() {
+    if (lock_view == "rectangular")
+        lock_relief_section(
+            "rectangular",
+            [0.72, 0.72, 0.72, 1]
+        );
+    else if (lock_view == "trapezoid")
+        lock_relief_section(
+            "trapezoid",
+            [0.88, 0.08, 0.05, 1]
+        );
+    else {
+        translate([
+            0,
+            -lock_comparison_spacing / 2,
+            0
+        ])
+            lock_relief_section(
+                "rectangular",
+                [0.72, 0.72, 0.72, 1]
+            );
+
+        translate([
+            0,
+            lock_comparison_spacing / 2,
+            0
+        ])
+            lock_relief_section(
+                "trapezoid",
+                [0.88, 0.08, 0.05, 1]
+            );
+    }
+}
+
+
+// ----------------------------------------------------------------------
 // Camera
 // ----------------------------------------------------------------------
 
@@ -152,7 +213,7 @@ if (experiment == "relief") {
             : hub75_lab_development_camera_distance_single();
 
     relief_experiment();
-} else {
+} else if (experiment == "tension") {
     $vpt = [
         base_clamp.base_thickness
             + tube_clamp_outer_radius(base_clamp),
@@ -166,4 +227,15 @@ if (experiment == "relief") {
             : 55;
 
     tension_experiment();
+} else {
+    // Right-side print-oriented inspection: print Y horizontal, print Z
+    // vertical. The thin section exposes the transverse opening directly.
+    $vpt = [0, 0.5, 0];
+    $vpr = [90, 0, 90];
+    $vpd =
+        lock_view == "section_comparison"
+            ? 62
+            : 48;
+
+    lock_relief_experiment();
 }
