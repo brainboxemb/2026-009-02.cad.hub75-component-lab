@@ -1,0 +1,25 @@
+paths:
+  design_root: dsg
+  build_root: bld
+  render_root: dsg/openscad/render
+  export_root: dsg/openscad/export
+
+design:
+  include_externals: false
+
+build_engine:
+  engine: scons
+
+openscad:
+  common_flags:
+    - --enable=object-function
+  render_flags:
+    - --render
+    - --projection=o
+  image_size: [1280, 960]
+
+externals:
+  - name: lib.scad.clamps
+    required_file: openscad/tube-clamp/tube_clamp.scad
+  - name: lib.scad.mechint
+    required_file: openscad/sliding-dovetail/sliding_dovetail.scad
