@@ -655,7 +655,7 @@ The panel-derived inputs are:
 coupler.panel_taper_depth
 coupler.panel_rear_outer_inset_x
 coupler.panel_rear_outer_inset_z
-hub75_panel_taper_shift_at_depth(...)
+hub75_panel_taper_shift_at_depth_mm(...)
 ```
 
 Production builds the two ridges **independently**:
