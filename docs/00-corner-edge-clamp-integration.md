@@ -78,3 +78,26 @@ readable:
 
 Physical fit is not claimed by this lab. It remains a later qualification step
 in the parent project.
+
+
+## Active lab entrypoints
+
+The active interactive workbench is:
+
+```text
+dsg/openscad/main.scad
+```
+
+The first stable build target is:
+
+```text
+dsg/openscad/render/corner-edge-clamp-baseline.scad
+```
+
+The render deliberately shows the unmodified medium left-corner production
+snapshot with the real detachable clamp adapter and a simple Ø10 reference tube.
+
+The previous clamp-relief/tension/lock-release experiments are complete and no
+longer participate in normal build target discovery. Their accepted outcomes are
+owned by the released libraries and parent project; Git history retains the lab
+iterations that produced them.
