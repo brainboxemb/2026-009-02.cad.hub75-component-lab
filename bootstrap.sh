@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Managed-Source: brainboxemb/tool.git-project/bootstrap/consumer-bootstrap.sh
+# Managed-Source-Version: 0.2.10
+# Managed-Source-Revision: 65b1b06a2178e51d0ce07d5771a3e55cd15db0ba
+# Managed-Local-Patch: none
 set -euo pipefail
 
 tool_path="tools/tool.git-project"
