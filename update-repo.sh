@@ -25,4 +25,4 @@ scad_tool="$root/tools/tool.scad-project/scad-project.sh"
   exit 1
 }
 
-"$scad_tool" --project "$root/project.yml" "$command_name"
+"$scad_tool" --project "$root" "$command_name"

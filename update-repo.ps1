@@ -21,9 +21,7 @@ if (-not (Test-Path -LiteralPath $ScadTool -PathType Leaf)) {
 }
 
 $CommandName = if ($Mode -eq "status") { "repo-status" } else { "repo-update" }
-$ProjectFile = Join-Path $Root "project.yml"
-
-& $ScadTool --project $ProjectFile $CommandName
+& $ScadTool --project $Root $CommandName
 if ($LASTEXITCODE -ne 0) {
     throw "SCAD repository $Mode failed."
 }
