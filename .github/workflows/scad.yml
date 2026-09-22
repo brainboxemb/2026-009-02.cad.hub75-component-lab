@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   scad:
-    uses: brainboxemb/tool.scad-project/.github/workflows/project-build.yml@v0.15.7
+    uses: brainboxemb/tool.scad-project/.github/workflows/project-build.yml@229aea1475d3fda2dc9252e6e442708df44b8812
     with:
       artifact_name: hub75-component-lab-build
       publish: true
