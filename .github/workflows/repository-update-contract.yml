@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 env:
-  GIT_TOOL_SHA: 045df0a8bd2007caf29fb625554a0b7853f90a87
+  GIT_TOOL_SHA: 2bcd0597f660e4b6f4d1bc802e38aada5f96111b
   SCAD_TOOL_SHA: 229aea1475d3fda2dc9252e6e442708df44b8812
 
 jobs:
@@ -31,16 +31,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -F "Managed-Source: brainboxemb/tool.git-project/bootstrap/consumer-update.sh" update-repo.sh
-          grep -F "Managed-Source-Version: 0.2.9" update-repo.sh
-          grep -F "Managed-Source-Revision: $GIT_TOOL_SHA" update-repo.sh
-          ! grep -Ei 'python|scad-project' update-repo.sh
+          grep -F "Managed-Source: brainboxemb/tool.git-project/bootstrap/consumer-update.sh" update.sh
+          grep -F "Managed-Source-Version: 0.2.9" update.sh
+          grep -F "Managed-Source-Revision: $GIT_TOOL_SHA" update.sh
+          ! grep -Ei 'python|scad-project' update.sh
       - name: Status is read-only
         shell: bash
         run: |
           set -euo pipefail
           before="$(git status --porcelain)"
-          ./update-repo.sh status
+          ./update.sh status
           after="$(git status --porcelain)"
           test "$before" = "$after"
       - name: Generic update invokes SCAD post-update hook
@@ -49,7 +49,7 @@ jobs:
           set -euo pipefail
           sed -i "s#project-build.yml@$SCAD_TOOL_SHA#project-build.yml@v0.15.7#" .github/workflows/scad.yml
           grep -F "project-build.yml@v0.15.7" .github/workflows/scad.yml
-          ./update-repo.sh
+          ./update.sh
           grep -F "project-build.yml@$SCAD_TOOL_SHA" .github/workflows/scad.yml
           test -z "$(git status --porcelain)"
 
@@ -72,7 +72,7 @@ jobs:
       - name: Verify generic launcher provenance
         shell: pwsh
         run: |
-          $text = [System.IO.File]::ReadAllText((Join-Path $PWD "update-repo.ps1"))
+          $text = [System.IO.File]::ReadAllText((Join-Path $PWD "update.ps1"))
           if ($text -notmatch 'Managed-Source: brainboxemb/tool.git-project/bootstrap/consumer-update.ps1') { throw "Missing managed source." }
           if ($text -notmatch 'Managed-Source-Version: 0.2.9') { throw "Missing managed source version." }
           if ($text -notmatch "Managed-Source-Revision: $env:GIT_TOOL_SHA") { throw "Missing managed source revision." }
@@ -81,7 +81,7 @@ jobs:
         shell: pwsh
         run: |
           $before = (git status --porcelain) -join "`n"
-          .\update-repo.ps1 status
+          .\update.ps1 status
           $after = (git status --porcelain) -join "`n"
           if ($before -ne $after) { throw "status changed the worktree." }
       - name: Generic update invokes SCAD post-update hook
@@ -92,7 +92,7 @@ jobs:
           $text = $text.Replace("project-build.yml@$env:SCAD_TOOL_SHA", "project-build.yml@v0.15.7")
           [System.IO.File]::WriteAllText($path, $text, (New-Object System.Text.UTF8Encoding($false)))
           if ([System.IO.File]::ReadAllText($path) -notmatch 'project-build.yml@v0\.15\.7') { throw "Failed to make workflow ref stale." }
-          .\update-repo.ps1
+          .\update.ps1
           if ([System.IO.File]::ReadAllText($path) -notmatch "project-build\.yml@$env:SCAD_TOOL_SHA") { throw "SCAD hook did not restore workflow ref." }
           $dirty = (git status --porcelain) -join "`n"
           if ($dirty) { throw "Qualification left worktree dirty: $dirty" }
