@@ -1,54 +1,60 @@
 // File: tube_mount_interface.scad
 //   HUB75 adapter around the reusable lib.scad.mechint sliding dovetail.
 //
-// Project coordinates:
+// Project orientation:
 //   X = aluminium-tube axis;
 //   Y = panel front -> rear, with the coupler mounting plane at Y = 0;
 //   Z = local display-edge outward direction.
 //
-// lib.scad.mechint owns the profile, fit, entry slot and lock. HUB75 rotates
-// that native interface so the clamp inserts from +Z. The Ø10 tube/clamp datum
-// stays fixed with the tube front 1.0 mm behind the panel front face. The
-// dovetail mouth is recessed another 0.5 mm into the clamp transition, at
-// local Y = -2.0 mm. Small / medium / large hosts scale the dovetail height
-// with their 2 / 3 / 4 mm rear-base thickness.
+// lib.scad.mechint design orientation:
+//   X = slide / insertion direction;
+//   Y = profile depth, mouth at Y = 0 and root toward +Y;
+//   Z = profile width.
+//
+// HUB75 maps that design orientation into the project orientation so the clamp
+// inserts from +Z. The Ø10 tube/clamp datum stays fixed with the tube front
+// 1.0 mm behind the panel front face. The dovetail mouth is recessed another
+// 0.5 mm into the clamp transition, at project Y = -2.0 mm. Small / medium /
+// large hosts scale the dovetail height with their 2 / 3 / 4 mm rear-base
+// thickness.
 
-use <../../ext/lib.scad.mechint/openscad/sliding-dovetail/sliding_dovetail.scad>
+use <../../ext/lib.scad.mechint/openscad/sliding_dovetail.scad>
+use <../../ext/lib.scad.hub75/openscad/p5-64x32-panel/hub75_p5_64x32_panel.scad>
+use <../../ext/lib.scad.forge/openscad/transform.scad>
 
-_HUB75_TUBE_MOUNT_FRONT_OFFSET = 1.0;
-_HUB75_TUBE_MOUNT_DOVETAIL_WIDTH = 12;
-_HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_SMALL = 2.0;
-_HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_MEDIUM = 2.5;
-_HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_LARGE = 3.0;
-_HUB75_TUBE_MOUNT_DOVETAIL_ANGLE = 30;
-_HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_LAND_DEPTH = 0.5;
-_HUB75_TUBE_MOUNT_DOVETAIL_ROOT_LAND_DEPTH = 0.5;
-_HUB75_TUBE_MOUNT_DOVETAIL_CLEARANCE = 0.20;
-_HUB75_TUBE_MOUNT_DOVETAIL_AXIAL_CLEARANCE = 0.25;
-_HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LENGTH = 16;
-_HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_Y = -2.0;
-_HUB75_TUBE_MOUNT_LOCK_MIN_SPRING_THICKNESS = 0.8;
-_HUB75_TUBE_MOUNT_LOCK_HINGE_THICKNESS = 0.8;
+_HUB75_TUBE_MOUNT_FRONT_OFFSET_MM = 1.0;
+_HUB75_TUBE_MOUNT_DOVETAIL_WIDTH_MM = 12;
+_HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_SMALL_MM = 2.0;
+_HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_MEDIUM_MM = 2.5;
+_HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_LARGE_MM = 3.0;
+_HUB75_TUBE_MOUNT_DOVETAIL_ANGLE_DEG = 30;
+_HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_LAND_DEPTH_MM = 0.5;
+_HUB75_TUBE_MOUNT_DOVETAIL_ROOT_LAND_DEPTH_MM = 0.5;
+_HUB75_TUBE_MOUNT_DOVETAIL_CLEARANCE_MM = 0.20;
+_HUB75_TUBE_MOUNT_DOVETAIL_AXIAL_CLEARANCE_MM = 0.25;
+_HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LEN_MM = 16;
+_HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_Y_MM = -2.0;
+_HUB75_TUBE_MOUNT_LOCK_MIN_SPRING_THICKNESS_MM = 0.8;
+_HUB75_TUBE_MOUNT_LOCK_HINGE_THICKNESS_MM = 0.8;
 _HUB75_TUBE_MOUNT_LOCK_HINGE_LENGTH_FACTOR = 0.5;
+_HUB75_TUBE_MOUNT_LOCK_RELEASE_SHAPE = "trapezoid";
+_HUB75_TUBE_MOUNT_LOCK_RELEASE_TAPER_ANGLE_DEG = 45;
 
-function hub75_tube_mount_tube_front_offset() =
-    _HUB75_TUBE_MOUNT_FRONT_OFFSET;
+function hub75_tube_mount_tube_front_offset_mm() =
+    _HUB75_TUBE_MOUNT_FRONT_OFFSET_MM;
 
-// Lab isolation datum copied from parent PR #45.
-_LAB_PANEL_MOUNTING_PLANE_Y = 14.5;
-
-function hub75_tube_mount_tube_center_y(
-    tube_diameter = 10,
-    panel = undef
+function hub75_tube_mount_tube_center_y_mm(
+    tube_diameter_mm = 10,
+    panel = hub75_p5_64x32_panel_create()
 ) =
-    hub75_tube_mount_tube_front_offset()
-    + tube_diameter / 2
-    - _LAB_PANEL_MOUNTING_PLANE_Y;
+    hub75_tube_mount_tube_front_offset_mm()
+    + tube_diameter_mm / 2
+    - hub75_p5_64x32_panel_mounting_plane_y(panel);
 
-function hub75_tube_mount_dovetail_mouth_y() =
-    _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_Y;
+function hub75_tube_mount_dovetail_mouth_y_mm() =
+    _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_Y_MM;
 
-function hub75_tube_mount_host_depth_for_size(size) =
+function hub75_tube_mount_host_depth_mm_for_size(size) =
     assert(
         size == "small" || size == "medium" || size == "large",
         str("Unsupported tube-mount size: ", size)
@@ -57,128 +63,134 @@ function hub75_tube_mount_host_depth_for_size(size) =
         : size == "large" ? 4
         : 3;
 
-function hub75_tube_mount_dovetail_height_for_size(size) =
+function hub75_tube_mount_dovetail_height_mm_for_size(size) =
     assert(
         size == "small" || size == "medium" || size == "large",
         str("Unsupported tube-mount size: ", size)
     )
     size == "small"
-        ? _HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_SMALL
+        ? _HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_SMALL_MM
         : size == "large"
-            ? _HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_LARGE
-            : _HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_MEDIUM;
+            ? _HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_LARGE_MM
+            : _HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_MEDIUM_MM;
 
-function hub75_tube_mount_dovetail_height_for_host_depth(host_depth) =
-    assert(host_depth > 0, "tube-mount host_depth must be > 0")
-    1 + host_depth / 2;
-
-function hub75_tube_mount_dovetail_channel_roof_y(dovetail_height) =
-    _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_Y
-    + dovetail_height
-    + _HUB75_TUBE_MOUNT_DOVETAIL_CLEARANCE;
-
-function hub75_tube_mount_dovetail_min_host_depth(
-    dovetail_height = _HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_SMALL
+function hub75_tube_mount_dovetail_height_mm_for_host_depth(
+    host_depth_mm
 ) =
-    hub75_tube_mount_dovetail_channel_roof_y(dovetail_height)
-    + _HUB75_TUBE_MOUNT_LOCK_MIN_SPRING_THICKNESS;
+    assert(host_depth_mm > 0, "tube-mount host_depth_mm must be > 0")
+    1 + host_depth_mm / 2;
 
-function hub75_tube_mount_lock_spring_thickness(
-    host_depth,
-    dovetail_height
+function hub75_tube_mount_dovetail_channel_roof_y_mm(
+    dovetail_height_mm
 ) =
-    host_depth
-    - hub75_tube_mount_dovetail_channel_roof_y(dovetail_height);
+    _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_Y_MM
+    + dovetail_height_mm
+    + _HUB75_TUBE_MOUNT_DOVETAIL_CLEARANCE_MM;
+
+function hub75_tube_mount_dovetail_min_host_depth_mm(
+    dovetail_height_mm = _HUB75_TUBE_MOUNT_DOVETAIL_HEIGHT_SMALL_MM
+) =
+    hub75_tube_mount_dovetail_channel_roof_y_mm(dovetail_height_mm)
+    + _HUB75_TUBE_MOUNT_LOCK_MIN_SPRING_THICKNESS_MM;
+
+function hub75_tube_mount_lock_spring_thickness_mm(
+    host_depth_mm,
+    dovetail_height_mm
+) =
+    host_depth_mm
+    - hub75_tube_mount_dovetail_channel_roof_y_mm(dovetail_height_mm);
 
 function hub75_tube_mount_dovetail_create(
-    host_depth = 3,
-    dovetail_height = undef,
-    entry_slot_length = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LENGTH,
-    lock_release_shape = "rectangular",
-    lock_release_taper_angle_deg = 45
+    host_depth_mm = 3,
+    dovetail_height_mm = undef,
+    entry_slot_len_mm = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LEN_MM
 ) =
     let(
-        active_dovetail_height =
-            is_undef(dovetail_height)
-                ? hub75_tube_mount_dovetail_height_for_host_depth(host_depth)
-                : dovetail_height,
-        spring_thickness =
-            hub75_tube_mount_lock_spring_thickness(
-                host_depth,
-                active_dovetail_height
+        _active_dovetail_height_mm =
+            is_undef(dovetail_height_mm)
+                ? hub75_tube_mount_dovetail_height_mm_for_host_depth(
+                    host_depth_mm
+                )
+                : dovetail_height_mm,
+        _spring_thickness_mm =
+            hub75_tube_mount_lock_spring_thickness_mm(
+                host_depth_mm,
+                _active_dovetail_height_mm
             ),
-        hinge_length =
-            spring_thickness > _HUB75_TUBE_MOUNT_LOCK_HINGE_THICKNESS
-                ? spring_thickness
+        _hinge_len_mm =
+            _spring_thickness_mm
+                > _HUB75_TUBE_MOUNT_LOCK_HINGE_THICKNESS_MM
+                ? _spring_thickness_mm
                     * _HUB75_TUBE_MOUNT_LOCK_HINGE_LENGTH_FACTOR
                 : 0
     )
     assert(
-        spring_thickness >= _HUB75_TUBE_MOUNT_LOCK_MIN_SPRING_THICKNESS,
+        _spring_thickness_mm
+            >= _HUB75_TUBE_MOUNT_LOCK_MIN_SPRING_THICKNESS_MM,
         "tube-mount dovetail host leaves too little material for the lock tongue"
     )
     sliding_dovetail_create(
-        width = _HUB75_TUBE_MOUNT_DOVETAIL_WIDTH,
-        height = active_dovetail_height,
-        angle = _HUB75_TUBE_MOUNT_DOVETAIL_ANGLE,
-        root_land_depth =
-            _HUB75_TUBE_MOUNT_DOVETAIL_ROOT_LAND_DEPTH,
-        mouth_land_depth =
-            _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_LAND_DEPTH,
-        clearance = _HUB75_TUBE_MOUNT_DOVETAIL_CLEARANCE,
-        axial_clearance = _HUB75_TUBE_MOUNT_DOVETAIL_AXIAL_CLEARANCE,
-        entry_slot_length = entry_slot_length,
-        locking = true,
-        lock_spring_thickness = spring_thickness,
-        lock_spring_hinge_length = hinge_length,
-        lock_spring_hinge_thickness =
-            _HUB75_TUBE_MOUNT_LOCK_HINGE_THICKNESS,
-        lock_release_shape = lock_release_shape,
-        lock_release_taper_angle_deg = lock_release_taper_angle_deg,
-        lock_cut_back_clearance = false,
-        lock_back_clearance = 0
+        width_mm = _HUB75_TUBE_MOUNT_DOVETAIL_WIDTH_MM,
+        height_mm = _active_dovetail_height_mm,
+        angle_deg = _HUB75_TUBE_MOUNT_DOVETAIL_ANGLE_DEG,
+        root_land_depth_mm =
+            _HUB75_TUBE_MOUNT_DOVETAIL_ROOT_LAND_DEPTH_MM,
+        mouth_land_depth_mm =
+            _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_LAND_DEPTH_MM,
+        clearance_mm = _HUB75_TUBE_MOUNT_DOVETAIL_CLEARANCE_MM,
+        axial_clearance_mm =
+            _HUB75_TUBE_MOUNT_DOVETAIL_AXIAL_CLEARANCE_MM,
+        entry_slot_len_mm = entry_slot_len_mm,
+        is_locking_enabled = true,
+        lock_spring_thickness_mm = _spring_thickness_mm,
+        lock_spring_hinge_len_mm = _hinge_len_mm,
+        lock_spring_hinge_thickness_mm =
+            _HUB75_TUBE_MOUNT_LOCK_HINGE_THICKNESS_MM,
+        lock_release_shape =
+            _HUB75_TUBE_MOUNT_LOCK_RELEASE_SHAPE,
+        lock_release_taper_angle_deg =
+            _HUB75_TUBE_MOUNT_LOCK_RELEASE_TAPER_ANGLE_DEG,
+        lock_has_back_clearance = false,
+        lock_back_clearance_mm = 0
     );
 
 function hub75_tube_mount_dovetail_create_for_size(
     size,
-    entry_slot_length = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LENGTH,
-    lock_release_shape = "rectangular",
-    lock_release_taper_angle_deg = 45
+    entry_slot_len_mm = _HUB75_TUBE_MOUNT_DOVETAIL_ENTRY_SLOT_LEN_MM
 ) =
     hub75_tube_mount_dovetail_create(
-        host_depth = hub75_tube_mount_host_depth_for_size(size),
-        dovetail_height = hub75_tube_mount_dovetail_height_for_size(size),
-        entry_slot_length = entry_slot_length,
-        lock_release_shape = lock_release_shape,
-        lock_release_taper_angle_deg = lock_release_taper_angle_deg
+        host_depth_mm = hub75_tube_mount_host_depth_mm_for_size(size),
+        dovetail_height_mm =
+            hub75_tube_mount_dovetail_height_mm_for_size(size),
+        entry_slot_len_mm = entry_slot_len_mm
     );
 
-function hub75_tube_mount_dovetail_angle(dovetail) =
-    dovetail.angle;
+function hub75_tube_mount_dovetail_angle_deg(obj) =
+    obj.angle_deg;
 
-function hub75_tube_mount_dovetail_mouth_land_depth(dovetail) =
-    sliding_dovetail_mouth_land_depth(dovetail);
+function hub75_tube_mount_dovetail_mouth_land_depth_mm(obj) =
+    sliding_dovetail_mouth_land_depth_mm(obj);
 
-function hub75_tube_mount_dovetail_root_land_depth(dovetail) =
-    sliding_dovetail_root_land_depth(dovetail);
+function hub75_tube_mount_dovetail_root_land_depth_mm(obj) =
+    sliding_dovetail_root_land_depth_mm(obj);
 
-function hub75_tube_mount_dovetail_mouth_width(dovetail) =
-    sliding_dovetail_mouth_width(dovetail);
+function hub75_tube_mount_dovetail_mouth_width_mm(obj) =
+    sliding_dovetail_mouth_width_mm(obj);
 
-function hub75_tube_mount_dovetail_female_root_width(dovetail) =
-    sliding_dovetail_female_root_width(dovetail);
+function hub75_tube_mount_dovetail_female_root_width_mm(obj) =
+    sliding_dovetail_female_root_width_mm(obj);
 
-function hub75_tube_mount_dovetail_female_slide(
-    dovetail,
-    slide
+function hub75_tube_mount_dovetail_female_slide_len_mm(
+    obj,
+    slide_len_mm
 ) =
-    sliding_dovetail_female_slide(
-        dovetail,
-        slide
+    sliding_dovetail_female_slide_len_mm(
+        obj,
+        slide_len_mm
     );
 
-function hub75_tube_mount_dovetail_entry_slot_length(dovetail) =
-    sliding_dovetail_entry_slot_length(dovetail);
+function hub75_tube_mount_dovetail_entry_slot_len_mm(obj) =
+    sliding_dovetail_entry_slot_len_mm(obj);
 
 
 // ----------------------------------------------------------------------
@@ -186,52 +198,52 @@ function hub75_tube_mount_dovetail_entry_slot_length(dovetail) =
 // ----------------------------------------------------------------------
 
 module hub75_tube_mount_dovetail_male_build(
-    dovetail,
-    slide,
-    center_x = 0,
-    center_z = 0
+    obj,
+    slide_len_mm,
+    center_x_mm = 0,
+    center_z_mm = 0
 ) {
     _hub75_tube_mount_dovetail_to_project(
-        center_x = center_x,
-        center_z = center_z
+        center_x_mm = center_x_mm,
+        center_z_mm = center_z_mm
     )
         sliding_dovetail_male_build(
-            dovetail,
-            slide = slide
+            obj,
+            slide_len_mm = slide_len_mm
         );
 }
 
 module hub75_tube_mount_dovetail_male_relief_cutter(
-    dovetail,
-    slide,
-    relief_width,
-    center_x = 0,
-    center_z = 0
+    obj,
+    slide_len_mm,
+    relief_width_mm,
+    center_x_mm = 0,
+    center_z_mm = 0
 ) {
     _hub75_tube_mount_dovetail_to_project(
-        center_x = center_x,
-        center_z = center_z
+        center_x_mm = center_x_mm,
+        center_z_mm = center_z_mm
     )
         sliding_dovetail_male_relief_cutter(
-            dovetail,
-            slide = slide,
-            relief_width = relief_width
+            obj,
+            slide_len_mm = slide_len_mm,
+            relief_width_mm = relief_width_mm
         );
 }
 
 module hub75_tube_mount_dovetail_female_cutter(
-    dovetail,
-    slide,
-    center_x = 0,
-    center_z = 0
+    obj,
+    slide_len_mm,
+    center_x_mm = 0,
+    center_z_mm = 0
 ) {
     _hub75_tube_mount_dovetail_to_project(
-        center_x = center_x,
-        center_z = center_z
+        center_x_mm = center_x_mm,
+        center_z_mm = center_z_mm
     )
         sliding_dovetail_female_cutter(
-            dovetail,
-            slide = slide
+            obj,
+            slide_len_mm = slide_len_mm
         );
 }
 
@@ -241,16 +253,20 @@ module hub75_tube_mount_dovetail_female_cutter(
 // ----------------------------------------------------------------------
 
 module _hub75_tube_mount_dovetail_to_project(
-    center_x = 0,
-    center_z = 0
+    center_x_mm = 0,
+    center_z_mm = 0
 ) {
-    // Native X becomes project -Z, native Y remains project Y with its mouth
-    // at -1.5 mm, and native Z becomes project X.
-    multmatrix([
-        [ 0, 0, 1, center_x],
-        [ 0, 1, 0, _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_Y],
-        [-1, 0, 0, center_z],
-        [ 0, 0, 0, 1]
-    ])
+    // Mechint design X -> project -Z.
+    // Mechint design Y -> project +Y.
+    // The right-handed frame derives design Z -> project +X.
+    fg_xf_frame(
+        pos_mm = [
+            center_x_mm,
+            _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_Y_MM,
+            center_z_mm
+        ],
+        x_axis = [0, 0, -1],
+        y_axis = [0, 1, 0]
+    )
         children();
 }
