@@ -245,6 +245,141 @@ module hub75_lab_corner_edge_clamp_access(
         }
 }
 
+
+// ----------------------------------------------------------------------
+// Focused section evidence
+// ----------------------------------------------------------------------
+
+module _hub75_lab_corner_edge_slice_at_z(
+    z_mm,
+    thickness_mm = 0.6
+) {
+    span_mm = 240;
+    active_thickness_mm = max(0.1, thickness_mm);
+
+    intersection() {
+        children();
+        translate([0, 0, z_mm])
+            cube(
+                [
+                    span_mm,
+                    span_mm,
+                    active_thickness_mm
+                ],
+                center = true
+            );
+    }
+}
+
+
+module _hub75_lab_corner_edge_slice_at_x(
+    x_mm,
+    thickness_mm = 0.6
+) {
+    span_mm = 240;
+    active_thickness_mm = max(0.1, thickness_mm);
+
+    intersection() {
+        children();
+        translate([x_mm, 0, 0])
+            cube(
+                [
+                    active_thickness_mm,
+                    span_mm,
+                    span_mm
+                ],
+                center = true
+            );
+    }
+}
+
+
+module hub75_lab_corner_edge_dovetail_profile(
+    coupler,
+    clamp,
+    section_thickness_mm = 0.6
+) {
+    section_z_mm = clamp.dovetail_center_z_mm;
+
+    color([0.72, 0.72, 0.72, 1])
+        _hub75_lab_corner_edge_slice_at_z(
+            section_z_mm,
+            section_thickness_mm
+        )
+            difference() {
+                _hub75_lab_corner_edge_core_raw(coupler);
+                _hub75_lab_corner_edge_dovetail_cutter(
+                    coupler,
+                    clamp
+                );
+            }
+
+    color([0.88, 0.08, 0.05, 1])
+        _hub75_lab_corner_edge_slice_at_z(
+            section_z_mm,
+            section_thickness_mm
+        )
+            _hub75_lab_corner_edge_feature_in_core(coupler)
+                _hub75_lab_corner_edge_dovetail_cutter(
+                    coupler,
+                    clamp
+                );
+}
+
+
+module hub75_lab_corner_edge_access_section(
+    coupler,
+    clamp,
+    resolution = FG_RES_HIGH(),
+    section_thickness_mm = 0.6
+) {
+    section_x_mm =
+        hub75_tube_corner_edge_clamp_x_mm(coupler);
+
+    color([0.72, 0.72, 0.72, 1])
+        _hub75_lab_corner_edge_slice_at_x(
+            section_x_mm,
+            section_thickness_mm
+        )
+            _hub75_lab_corner_edge_tube_mount_raw(
+                coupler,
+                resolution
+            );
+
+    color([0.88, 0.08, 0.05, 1])
+        _hub75_lab_corner_edge_slice_at_x(
+            section_x_mm,
+            section_thickness_mm
+        )
+            difference() {
+                _hub75_lab_corner_edge_total_removed_raw(
+                    coupler,
+                    resolution
+                );
+
+                _hub75_lab_corner_edge_tube_keepout_cutter(
+                    coupler,
+                    clamp
+                );
+
+                _hub75_lab_corner_edge_dovetail_cutter(
+                    coupler,
+                    clamp
+                );
+            }
+
+    color([0.10, 0.45, 0.85, 1])
+        _hub75_lab_corner_edge_slice_at_x(
+            section_x_mm,
+            section_thickness_mm
+        )
+            _hub75_lab_corner_edge_feature_in_core(coupler)
+                _hub75_lab_corner_edge_tube_keepout_cutter(
+                    coupler,
+                    clamp
+                );
+}
+
 module hub75_lab_corner_edge_clamp_view(
     side = "left",
     size = "medium",
@@ -290,6 +425,17 @@ module hub75_lab_corner_edge_clamp_view(
         hub75_lab_corner_edge_dovetail(
             coupler,
             clamp
+        );
+    else if (view == "dovetail_profile")
+        hub75_lab_corner_edge_dovetail_profile(
+            coupler,
+            clamp
+        );
+    else if (view == "access_section")
+        hub75_lab_corner_edge_access_section(
+            coupler,
+            clamp,
+            resolution = resolution
         );
     else if (view == "clamp_access")
         hub75_lab_corner_edge_clamp_access(
