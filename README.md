@@ -142,12 +142,19 @@ evidence:
 - HUB75 parent PR #45.
 
 
-## Migration 009 tooling baseline
+## Current tooling baseline
 
-The retained component lab uses released `tool.scad-project v0.15.7`
-(`bfaac9f6916c09bc6525abddf64c87238fe59103`) for the Migration 009
-baseline. This keeps production-run serialization and the qualified read-only
-`update-repo status` contract aligned with the current SCAD project tooling.
+The active component lab uses only released repository tooling:
+
+```text
+tool.git-project  v0.2.10  65b1b06a2178e51d0ce07d5771a3e55cd15db0ba
+tool.scad-project v0.15.9  ef2c244de690b4f61ca2937b56f36600a1d9858e
+```
+
+The generic root launchers are the centrally managed `bootstrap.*` and
+`update.*` copies from `tool.git-project v0.2.10`. SCAD-specific update
+composition is provided by the released `tool.scad-project v0.15.9`
+post-update hook. The read-only command is therefore `update status`.
 
 
 ## Active experiment — corner-edge clamp integration
