@@ -8,7 +8,7 @@ use <ext/lib.scad.forge/openscad/resolution.scad>
 use <lab_components/corner_edge_clamp_lab.scad>
 
 /* [Corner-edge lab] */
-c_view = "assembly"; // [core,tube_mount,assembly,exploded,removed,tube_keepout,dovetail,dovetail_profile,clamp_access,access_section]
+c_view = "assembly"; // [core,tube_mount,assembly,exploded,removed,tube_keepout,dovetail,dovetail_profile,clamp_access,access_section,clamp_sweep,rear_access,print_orientation]
 d_side = "left"; // [left,right]
 d_size = "medium"; // [small,medium,large]
 c_show_tube = true;

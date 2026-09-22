@@ -5,6 +5,7 @@
 // to the frozen parent-source snapshot and the released reusable libraries.
 
 use <../ext/lib.scad.forge/openscad/resolution.scad>
+use <../ext/lib.scad.forge/openscad/transform.scad>
 use <../components/hub75/corner-edge-coupler/hub75_corner_edge_coupler.scad>
 use <../project_components/tube_mount/corner-edge-coupler/hub75_tube_corner_edge_coupler.scad>
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
