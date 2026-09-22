@@ -140,3 +140,11 @@ evidence:
 - `lib.scad.clamps v0.1.8`;
 - `lib.scad.mechint v0.1.6`;
 - HUB75 parent PR #45.
+
+
+## Migration 009 tooling baseline
+
+The retained component lab uses released `tool.scad-project v0.15.7`
+(`bfaac9f6916c09bc6525abddf64c87238fe59103`) for the Migration 009
+baseline. This keeps production-run serialization and the qualified read-only
+`update-repo status` contract aligned with the current SCAD project tooling.
