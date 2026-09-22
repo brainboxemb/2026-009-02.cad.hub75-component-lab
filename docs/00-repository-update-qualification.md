@@ -23,3 +23,16 @@ root update-repo.*
 
 The root launcher remains generic and Python-free. SCAD owns only its
 post-update behavior.
+
+
+## Result
+
+Qualified on exact lab source
+`6656d5e4d0b7d8a141f6b5a787b8c6974a58ed80`.
+
+- Repository update qualification `35766411168`: Linux and native Windows green.
+- Normal SCAD lab build `35766412297`: green.
+
+The proposed composition is accepted as qualification evidence. This lab does
+not authorize a portfolio rollout; that can be coordinated separately after the
+owners are merged/released.
