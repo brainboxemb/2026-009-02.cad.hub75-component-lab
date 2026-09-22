@@ -8,7 +8,7 @@ corner-edge tube-mount interface.
 ```text
 parent repository : brainboxemb/2026-009-01.cad.HUB75-display-frame
 parent branch     : main
-parent commit     : 267abce8a3ac6e65f493618d2d4cc03164ea9911
+parent commit     : 06191e400bc8b334af929274defbed627df461f6
 lab issue / PR    : #7
 ```
 
@@ -101,3 +101,26 @@ The previous clamp-relief/tension/lock-release experiments are complete and no
 longer participate in normal build target discovery. Their accepted outcomes are
 owned by the released libraries and parent project; Git history retains the lab
 iterations that produced them.
+
+
+## Maintenance refresh
+
+The parent baseline was refreshed after the HUB75 maintenance pass on
+2026-09-22.
+
+```text
+previous parent baseline : 267abce8a3ac6e65f493618d2d4cc03164ea9911
+current parent baseline  : 06191e400bc8b334af929274defbed627df461f6
+```
+
+The relevant maintenance changes are implementation cleanups, not a new product
+geometry decision:
+
+- corner core uses targeted Forge CSG/cutter vocabulary where it clarifies intent;
+- corner tube-mount wrapper uses the current Forge cutter/transform vocabulary;
+- detachable clamp uses the current Forge CSG composition;
+- STL print orientation is now owned at the parent export/manufacturing boundary
+  and is therefore not copied into this lab geometry harness.
+
+The lab continues to study the same corner integration question against this
+maintained parent source.

@@ -13,6 +13,7 @@
 use <../../../ext/lib.scad.clamps/openscad/tube-clamp/tube_clamp.scad>
 use <../../../ext/lib.scad.forge/openscad/resolution.scad>
 use <../../../ext/lib.scad.forge/openscad/transform.scad>
+use <../../../ext/lib.scad.forge/openscad/csg.scad>
 use <../tube_mount_interface.scad>
 
 /* [Component] */
@@ -221,8 +222,8 @@ module hub75_tube_clamp_build(
 ) {
     fg_res_apply(resolution)
         color(part_color)
-        union() {
-            difference() {
+        fg_diff() {
+            fg_body()
                 _hub75_tube_clamp_ring_build(
                     obj,
                     use_tension_bore,
@@ -230,11 +231,13 @@ module hub75_tube_clamp_build(
                     apply_transition_relief
                 );
 
+            fg_remove() {
                 _hub75_tube_clamp_dovetail_relief_cutter(obj);
                 _hub75_tube_clamp_dovetail_relief_chamfer_cutter(obj);
             }
 
-            _hub75_tube_clamp_dovetail_build(obj);
+            fg_keep()
+                _hub75_tube_clamp_dovetail_build(obj);
         }
 }
 

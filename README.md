@@ -158,6 +158,6 @@ the detachable clamp, top-entry female dovetail, insertion keep-out and Ø10 tub
 clearance should be integrated into the existing corner body.
 
 The frozen parent baseline is
-`brainboxemb/2026-009-01.cad.HUB75-display-frame@267abce8a3ac6e65f493618d2d4cc03164ea9911`.
+`brainboxemb/2026-009-01.cad.HUB75-display-frame@06191e400bc8b334af929274defbed627df461f6`.
 
 See [docs/00-corner-edge-clamp-integration.md](docs/00-corner-edge-clamp-integration.md).

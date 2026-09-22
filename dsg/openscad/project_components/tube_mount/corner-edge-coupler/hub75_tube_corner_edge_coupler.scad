@@ -10,6 +10,7 @@
 use <../../../components/hub75/corner-edge-coupler/hub75_corner_edge_coupler.scad>
 use <../../../ext/lib.scad.forge/openscad/resolution.scad>
 use <../../../ext/lib.scad.forge/openscad/transform.scad>
+use <../../../ext/lib.scad.forge/openscad/cutter.scad>
 use <../tube-clamp/hub75_tube_clamp.scad>
 use <../tube_mount_interface.scad>
 
@@ -110,19 +111,20 @@ module _hub75_tube_corner_edge_keepout_cutter(
         + 2 * hub75_tube_corner_edge_keepout_radial_clearance_mm(coupler);
     cutter_length =
         coupler.profile_size
-        + 2 * coupler.outside_projection
-        + 2 * _HUB75_TUBE_CORNER_EPS_MM;
+        + 2 * coupler.outside_projection;
 
-    translate([
-        -cutter_length / 2,
-        hub75_tube_clamp_tube_center_y_mm(clamp),
-        hub75_tube_clamp_tube_center_z_mm(clamp)
-    ])
-        rotate([0, 90, 0])
-            cylinder(
-                d = keepout_d,
-                h = cutter_length
-            );
+    fg_cut_cylinder(
+        diameter_mm = keepout_d,
+        height_mm = cutter_length,
+        pos_mm = [
+            -cutter_length / 2,
+            hub75_tube_clamp_tube_center_y_mm(clamp),
+            hub75_tube_clamp_tube_center_z_mm(clamp)
+        ],
+        rot_deg = [0, 90, 0],
+        overlap = [FG_BOTTOM(), FG_TOP()],
+        overlap_mm = _HUB75_TUBE_CORNER_EPS_MM
+    );
 }
 
 
