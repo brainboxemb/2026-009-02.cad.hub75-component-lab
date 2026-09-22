@@ -246,6 +246,117 @@ module hub75_lab_corner_edge_clamp_access(
 }
 
 
+module _hub75_lab_corner_edge_clamp_sweep_cutter(
+    coupler,
+    clamp
+) {
+    clearance =
+        hub75_tube_corner_edge_clamp_body_clearance_mm(coupler);
+    entry_travel =
+        hub75_tube_mount_dovetail_entry_slot_len_mm(
+            clamp.dovetail
+        );
+    clip_x =
+        hub75_tube_corner_edge_clamp_x_mm(coupler);
+
+    hull() {
+        _hub75_tube_corner_edge_outer_ring_envelope(
+            clamp,
+            clip_x,
+            radial_clearance = clearance,
+            lateral_clearance = clearance,
+            z_shift = 0
+        );
+
+        _hub75_tube_corner_edge_outer_ring_envelope(
+            clamp,
+            clip_x,
+            radial_clearance = clearance,
+            lateral_clearance = clearance,
+            z_shift = entry_travel
+        );
+    }
+}
+
+
+module hub75_lab_corner_edge_clamp_sweep(
+    coupler,
+    clamp
+) {
+    color([0.72, 0.72, 0.72, 0.22])
+        _hub75_lab_corner_edge_core_raw(coupler);
+
+    color([0.88, 0.08, 0.05, 1])
+        _hub75_lab_corner_edge_feature_in_core(coupler)
+            _hub75_lab_corner_edge_clamp_sweep_cutter(
+                coupler,
+                clamp
+            );
+}
+
+
+module hub75_lab_corner_edge_rear_access(
+    coupler,
+    clamp
+) {
+    clearance =
+        hub75_tube_corner_edge_clamp_body_clearance_mm(coupler);
+    entry_travel =
+        hub75_tube_mount_dovetail_entry_slot_len_mm(
+            clamp.dovetail
+        );
+    clip_x =
+        hub75_tube_corner_edge_clamp_x_mm(coupler);
+
+    color([0.72, 0.72, 0.72, 0.22])
+        _hub75_lab_corner_edge_core_raw(coupler);
+
+    color([0.88, 0.08, 0.05, 1])
+        _hub75_lab_corner_edge_feature_in_core(coupler)
+            _hub75_tube_corner_edge_clamp_access_cutter(
+                coupler,
+                clamp,
+                clip_x,
+                clearance,
+                entry_travel
+            );
+}
+
+
+// Diagnostic copy of the parent manufacturing mapping:
+//
+//   project +X -> printer +X
+//   project +Y -> printer -Z
+//   project +Z -> printer +Y
+//
+// The production owner remains the parent export/manufacturing boundary.
+module _hub75_lab_corner_edge_rear_face_down(
+    rear_y_mm
+) {
+    fg_xf_frame(
+        pos_mm = [0, 0, rear_y_mm],
+        x_axis = [1, 0, 0],
+        y_axis = [0, 0, -1]
+    )
+        children();
+}
+
+
+module hub75_lab_corner_edge_print_orientation(
+    coupler,
+    resolution = FG_RES_HIGH()
+) {
+    _hub75_lab_corner_edge_rear_face_down(
+        coupler.base_thickness
+    )
+        hub75_lab_corner_edge_tube_mount(
+            coupler,
+            resolution = resolution,
+            part_color = [0.72, 0.72, 0.72, 1]
+        );
+}
+
+
 // ----------------------------------------------------------------------
 // Focused section evidence
 // ----------------------------------------------------------------------
@@ -435,6 +546,21 @@ module hub75_lab_corner_edge_clamp_view(
         hub75_lab_corner_edge_access_section(
             coupler,
             clamp,
+            resolution = resolution
+        );
+    else if (view == "clamp_sweep")
+        hub75_lab_corner_edge_clamp_sweep(
+            coupler,
+            clamp
+        );
+    else if (view == "rear_access")
+        hub75_lab_corner_edge_rear_access(
+            coupler,
+            clamp
+        );
+    else if (view == "print_orientation")
+        hub75_lab_corner_edge_print_orientation(
+            coupler,
             resolution = resolution
         );
     else if (view == "clamp_access")
