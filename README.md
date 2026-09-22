@@ -148,3 +148,16 @@ The retained component lab uses released `tool.scad-project v0.15.7`
 (`bfaac9f6916c09bc6525abddf64c87238fe59103`) for the Migration 009
 baseline. This keeps production-run serialization and the qualified read-only
 `update-repo status` contract aligned with the current SCAD project tooling.
+
+
+## Active experiment — corner-edge clamp integration
+
+Issue / draft PR #7 isolates the current **corner-edge** tube-mount geometry
+before further production changes. The question is intentionally limited to how
+the detachable clamp, top-entry female dovetail, insertion keep-out and Ø10 tube
+clearance should be integrated into the existing corner body.
+
+The frozen parent baseline is
+`brainboxemb/2026-009-01.cad.HUB75-display-frame@267abce8a3ac6e65f493618d2d4cc03164ea9911`.
+
+See [docs/00-corner-edge-clamp-integration.md](docs/00-corner-edge-clamp-integration.md).
