@@ -8,7 +8,7 @@ use <ext/lib.scad.forge/openscad/resolution.scad>
 use <lab_components/corner_edge_clamp_lab.scad>
 
 /* [Corner-edge lab] */
-c_view = "assembly"; // [core,tube_mount,assembly,exploded]
+c_view = "assembly"; // [core,tube_mount,assembly,exploded,removed,tube_keepout,dovetail,clamp_access]
 d_side = "left"; // [left,right]
 d_size = "medium"; // [small,medium,large]
 c_show_tube = true;
@@ -20,9 +20,9 @@ function _hub75_lab_active_resolution(name) =
         ? FG_RES_LOW()
         : FG_RES_HIGH();
 
-$vpr = [70, 0, 35];
-$vpt = [0, 0, 12];
-$vpd = 220;
+$vpr = [68, 0, 35];
+$vpt = [18, 1.5, -10];
+$vpd = 240;
 
 hub75_lab_corner_edge_clamp_view(
     side = d_side,

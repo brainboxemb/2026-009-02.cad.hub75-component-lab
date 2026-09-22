@@ -10,6 +10,8 @@ use <../project_components/tube_mount/corner-edge-coupler/hub75_tube_corner_edge
 use <../project_components/tube_mount/tube-clamp/hub75_tube_clamp.scad>
 use <../project_components/tube_mount/tube_mount_interface.scad>
 
+_HUB75_LAB_CORNER_EPS_MM = 0.05;
+
 function hub75_lab_corner_edge_coupler_create(
     side = "left",
     size = "medium"
@@ -27,12 +29,88 @@ function hub75_lab_corner_edge_clamp_create(coupler) =
             )
     );
 
+module _hub75_lab_corner_edge_core_raw(coupler) {
+    hub75_corner_edge_coupler_build(coupler);
+}
+
+module _hub75_lab_corner_edge_tube_mount_raw(
+    coupler,
+    resolution
+) {
+    hub75_tube_corner_edge_coupler_build(
+        coupler,
+        resolution = resolution
+    );
+}
+
+module _hub75_lab_corner_edge_total_removed_raw(
+    coupler,
+    resolution
+) {
+    difference() {
+        _hub75_lab_corner_edge_core_raw(coupler);
+        _hub75_lab_corner_edge_tube_mount_raw(
+            coupler,
+            resolution
+        );
+    }
+}
+
+module _hub75_lab_corner_edge_tube_keepout_cutter(
+    coupler,
+    clamp
+) {
+    keepout_diameter_mm =
+        hub75_tube_clamp_functional_diameter_mm(clamp)
+        + 2
+            * hub75_tube_corner_edge_keepout_radial_clearance_mm(
+                coupler
+            );
+    cutter_length_mm =
+        coupler.profile_size
+        + 2 * coupler.outside_projection
+        + 2 * _HUB75_LAB_CORNER_EPS_MM;
+
+    translate([
+        -cutter_length_mm / 2,
+        hub75_tube_clamp_tube_center_y_mm(clamp),
+        hub75_tube_clamp_tube_center_z_mm(clamp)
+    ])
+        rotate([0, 90, 0])
+            cylinder(
+                d = keepout_diameter_mm,
+                h = cutter_length_mm
+            );
+}
+
+module _hub75_lab_corner_edge_dovetail_cutter(
+    coupler,
+    clamp
+) {
+    hub75_tube_mount_dovetail_female_cutter(
+        clamp.dovetail,
+        slide_len_mm = clamp.dovetail_slide_len_mm,
+        center_x_mm =
+            hub75_tube_corner_edge_clamp_x_mm(coupler),
+        center_z_mm = clamp.dovetail_center_z_mm
+    );
+}
+
+module _hub75_lab_corner_edge_feature_in_core(
+    coupler
+) {
+    intersection() {
+        _hub75_lab_corner_edge_core_raw(coupler);
+        children();
+    }
+}
+
 module hub75_lab_corner_edge_core(
     coupler,
     part_color = [0.72, 0.72, 0.72, 1]
 ) {
     color(part_color)
-        hub75_corner_edge_coupler_build(coupler);
+        _hub75_lab_corner_edge_core_raw(coupler);
 }
 
 module hub75_lab_corner_edge_tube_mount(
@@ -41,9 +119,9 @@ module hub75_lab_corner_edge_tube_mount(
     part_color = [0.72, 0.05, 0.04, 1]
 ) {
     color(part_color)
-        hub75_tube_corner_edge_coupler_build(
+        _hub75_lab_corner_edge_tube_mount_raw(
             coupler,
-            resolution = resolution
+            resolution
         );
 }
 
@@ -72,7 +150,7 @@ module hub75_lab_corner_edge_tube(
     clamp,
     z_shift_mm = 0,
     resolution = FG_RES_HIGH(),
-    part_color = [0.72, 0.74, 0.76, 1]
+    part_color = [0.72, 0.74, 0.76, 0.35]
 ) {
     tube_length_mm =
         coupler.profile_size
@@ -94,6 +172,77 @@ module hub75_lab_corner_edge_tube(
                     h = tube_length_mm,
                     $fn = resolution == FG_RES_LOW() ? 48 : 160
                 );
+}
+
+module hub75_lab_corner_edge_removed(
+    coupler,
+    resolution = FG_RES_HIGH()
+) {
+    color([0.72, 0.72, 0.72, 0.22])
+        _hub75_lab_corner_edge_core_raw(coupler);
+
+    color([0.88, 0.08, 0.05, 1])
+        _hub75_lab_corner_edge_total_removed_raw(
+            coupler,
+            resolution
+        );
+}
+
+module hub75_lab_corner_edge_tube_keepout(
+    coupler,
+    clamp
+) {
+    color([0.72, 0.72, 0.72, 0.22])
+        _hub75_lab_corner_edge_core_raw(coupler);
+
+    color([0.10, 0.45, 0.85, 1])
+        _hub75_lab_corner_edge_feature_in_core(coupler)
+            _hub75_lab_corner_edge_tube_keepout_cutter(
+                coupler,
+                clamp
+            );
+}
+
+module hub75_lab_corner_edge_dovetail(
+    coupler,
+    clamp
+) {
+    color([0.72, 0.72, 0.72, 0.22])
+        _hub75_lab_corner_edge_core_raw(coupler);
+
+    color([0.88, 0.08, 0.05, 1])
+        _hub75_lab_corner_edge_feature_in_core(coupler)
+            _hub75_lab_corner_edge_dovetail_cutter(
+                coupler,
+                clamp
+            );
+}
+
+module hub75_lab_corner_edge_clamp_access(
+    coupler,
+    clamp,
+    resolution = FG_RES_HIGH()
+) {
+    color([0.72, 0.72, 0.72, 0.22])
+        _hub75_lab_corner_edge_core_raw(coupler);
+
+    color([0.88, 0.08, 0.05, 1])
+        difference() {
+            _hub75_lab_corner_edge_total_removed_raw(
+                coupler,
+                resolution
+            );
+
+            _hub75_lab_corner_edge_tube_keepout_cutter(
+                coupler,
+                clamp
+            );
+
+            _hub75_lab_corner_edge_dovetail_cutter(
+                coupler,
+                clamp
+            );
+        }
 }
 
 module hub75_lab_corner_edge_clamp_view(
@@ -125,6 +274,27 @@ module hub75_lab_corner_edge_clamp_view(
     else if (view == "tube_mount")
         hub75_lab_corner_edge_tube_mount(
             coupler,
+            resolution = resolution
+        );
+    else if (view == "removed")
+        hub75_lab_corner_edge_removed(
+            coupler,
+            resolution = resolution
+        );
+    else if (view == "tube_keepout")
+        hub75_lab_corner_edge_tube_keepout(
+            coupler,
+            clamp
+        );
+    else if (view == "dovetail")
+        hub75_lab_corner_edge_dovetail(
+            coupler,
+            clamp
+        );
+    else if (view == "clamp_access")
+        hub75_lab_corner_edge_clamp_access(
+            coupler,
+            clamp,
             resolution = resolution
         );
     else {
