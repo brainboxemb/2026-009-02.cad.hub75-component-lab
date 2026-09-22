@@ -202,8 +202,62 @@ The production representation is:
 _hub75_corner_edge_coupler_panel_keepout_2d(coupler)
 ```
 
-It starts from the physical rear panel quadrant and subtracts the rounded rear
-opening. The side/end rail widths and opening radius are all panel-derived.
+This is not a hand-authored polygon and it is not the union of two rail
+rectangles. Production constructs the L-shaped physical keep-out as one Boolean
+difference:
+
+```text
+large local corner square
+MINUS
+inward opening rectangle with a rounded corner
+=
+physical L-shaped rear-corner keep-out
+```
+
+The corresponding production construction is:
+
+```scad
+difference() {
+    square([span, span]);
+
+    offset(r = corner_r)
+        offset(delta = -corner_r)
+            translate([side_w, end_w])
+                square([...]);
+}
+```
+
+The nested `offset()` pair is what creates the inner curve. The opening
+rectangle is first shrunk by `corner_r` and then grown back by the same radius
+with rounded corners. Subtracting that rounded opening from the large square
+leaves the gray L-shape shown above.
+
+The parameters are all panel-derived:
+
+```scad
+side_w   = coupler.rear_side_rail_width;
+end_w    = coupler.rear_end_rail_width;
+corner_r = coupler.rear_opening_corner_radius;
+```
+
+`rear_opening_corner_radius` comes from `lib.scad.hub75`. Its reference
+value is 5.0 mm and is scaled with the actual panel dimensions; with the current
+159.70 × 319.71 mm panel model the effective radius is approximately 4.99 mm.
+
+The red band in the image is a separate explanatory layer. It is the additional
+print fit clearance around the physical gray keep-out:
+
+```scad
+offset(delta = coupler.fit_clearance)
+    _hub75_corner_edge_coupler_panel_keepout_2d(coupler);
+```
+
+with the original keep-out subtracted so only the clearance band remains.
+
+The initial translation places this local construction on the physical rear
+panel corner, and the X mirror supplies the left/right variant. The side/end rail
+widths and opening radius therefore remain authoritative panel geometry rather
+than duplicated project dimensions.
 
 ## 2. Build the horizontal arm around the rear end rail
 
