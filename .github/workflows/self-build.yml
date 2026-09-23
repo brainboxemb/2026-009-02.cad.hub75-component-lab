@@ -1,0 +1,19 @@
+name: Build
+
+# Purpose: build and publish retained component-lab output for an active PR or manual run.
+# Scope: repository self-entry workflow; delegates focused build execution to the released reusable Build API.
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+permissions:
+  contents: write
+  packages: read
+
+jobs:
+  build:
+    uses: brainboxemb/tool.scad-project/.github/workflows/reusable-build.yml@v0.15.11
+    with:
+      artifact_name: hub75-component-lab-build
+      publish: true

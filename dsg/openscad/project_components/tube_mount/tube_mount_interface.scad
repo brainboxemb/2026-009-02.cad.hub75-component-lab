@@ -13,7 +13,7 @@
 // local Y = -2.0 mm. Small / medium / large hosts scale the dovetail height
 // with their 2 / 3 / 4 mm rear-base thickness.
 
-use <../../ext/lib.scad.mechint/openscad/sliding-dovetail/sliding_dovetail.scad>
+use <../../ext/lib.scad.mechint/openscad/sliding_dovetail.scad>
 
 _HUB75_TUBE_MOUNT_FRONT_OFFSET = 1.0;
 _HUB75_TUBE_MOUNT_DOVETAIL_WIDTH = 12;
@@ -118,25 +118,25 @@ function hub75_tube_mount_dovetail_create(
         "tube-mount dovetail host leaves too little material for the lock tongue"
     )
     sliding_dovetail_create(
-        width = _HUB75_TUBE_MOUNT_DOVETAIL_WIDTH,
-        height = active_dovetail_height,
-        angle = _HUB75_TUBE_MOUNT_DOVETAIL_ANGLE,
-        root_land_depth =
+        width_mm = _HUB75_TUBE_MOUNT_DOVETAIL_WIDTH,
+        height_mm = active_dovetail_height,
+        angle_deg = _HUB75_TUBE_MOUNT_DOVETAIL_ANGLE,
+        root_land_depth_mm =
             _HUB75_TUBE_MOUNT_DOVETAIL_ROOT_LAND_DEPTH,
-        mouth_land_depth =
+        mouth_land_depth_mm =
             _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_LAND_DEPTH,
-        clearance = _HUB75_TUBE_MOUNT_DOVETAIL_CLEARANCE,
-        axial_clearance = _HUB75_TUBE_MOUNT_DOVETAIL_AXIAL_CLEARANCE,
-        entry_slot_length = entry_slot_length,
-        locking = true,
-        lock_spring_thickness = spring_thickness,
-        lock_spring_hinge_length = hinge_length,
-        lock_spring_hinge_thickness =
+        clearance_mm = _HUB75_TUBE_MOUNT_DOVETAIL_CLEARANCE,
+        axial_clearance_mm = _HUB75_TUBE_MOUNT_DOVETAIL_AXIAL_CLEARANCE,
+        entry_slot_len_mm = entry_slot_length,
+        is_locking_enabled = true,
+        lock_spring_thickness_mm = spring_thickness,
+        lock_spring_hinge_len_mm = hinge_length,
+        lock_spring_hinge_thickness_mm =
             _HUB75_TUBE_MOUNT_LOCK_HINGE_THICKNESS,
         lock_release_shape = lock_release_shape,
         lock_release_taper_angle_deg = lock_release_taper_angle_deg,
-        lock_cut_back_clearance = false,
-        lock_back_clearance = 0
+        lock_has_back_clearance = false,
+        lock_back_clearance_mm = 0
     );
 
 function hub75_tube_mount_dovetail_create_for_size(
@@ -154,31 +154,31 @@ function hub75_tube_mount_dovetail_create_for_size(
     );
 
 function hub75_tube_mount_dovetail_angle(dovetail) =
-    dovetail.angle;
+    dovetail.angle_deg;
 
 function hub75_tube_mount_dovetail_mouth_land_depth(dovetail) =
-    sliding_dovetail_mouth_land_depth(dovetail);
+    sliding_dovetail_mouth_land_depth_mm(dovetail);
 
 function hub75_tube_mount_dovetail_root_land_depth(dovetail) =
-    sliding_dovetail_root_land_depth(dovetail);
+    sliding_dovetail_root_land_depth_mm(dovetail);
 
 function hub75_tube_mount_dovetail_mouth_width(dovetail) =
-    sliding_dovetail_mouth_width(dovetail);
+    sliding_dovetail_mouth_width_mm(dovetail);
 
 function hub75_tube_mount_dovetail_female_root_width(dovetail) =
-    sliding_dovetail_female_root_width(dovetail);
+    sliding_dovetail_female_root_width_mm(dovetail);
 
 function hub75_tube_mount_dovetail_female_slide(
     dovetail,
     slide
 ) =
-    sliding_dovetail_female_slide(
+    sliding_dovetail_female_slide_len_mm(
         dovetail,
         slide
     );
 
 function hub75_tube_mount_dovetail_entry_slot_length(dovetail) =
-    sliding_dovetail_entry_slot_length(dovetail);
+    sliding_dovetail_entry_slot_len_mm(dovetail);
 
 
 // ----------------------------------------------------------------------
@@ -197,7 +197,7 @@ module hub75_tube_mount_dovetail_male_build(
     )
         sliding_dovetail_male_build(
             dovetail,
-            slide = slide
+            slide_len_mm = slide
         );
 }
 
@@ -214,8 +214,8 @@ module hub75_tube_mount_dovetail_male_relief_cutter(
     )
         sliding_dovetail_male_relief_cutter(
             dovetail,
-            slide = slide,
-            relief_width = relief_width
+            slide_len_mm = slide,
+            relief_width_mm = relief_width
         );
 }
 
@@ -231,7 +231,7 @@ module hub75_tube_mount_dovetail_female_cutter(
     )
         sliding_dovetail_female_cutter(
             dovetail,
-            slide = slide
+            slide_len_mm = slide
         );
 }
 
