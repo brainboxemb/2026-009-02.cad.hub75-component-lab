@@ -5,6 +5,16 @@ components.
 
 Parent project: `brainboxemb/2026-009-01.cad.HUB75-display-frame`.
 
+## Documentation role
+
+This repository is a completed/retained component lab, not a long-lived production owner.
+Its README is the lab report and retained evidence entrypoint; it intentionally does not
+mirror the normal project `00/10/20/30` document set.
+
+For current BrainboxEmb working conventions, start from
+`brainboxemb.meta/AGENTS.md`. Production geometry remains owned by the parent
+project and released reusable libraries named below.
+
 ## Status
 
 The two clamp-focused experiments developed on PR #3 are complete. Production
@@ -142,9 +152,9 @@ evidence:
 - HUB75 parent PR #45.
 
 
-## Migration 009 tooling baseline
+## Retained Migration 009 tooling baseline
 
-The retained component lab uses released `tool.scad-project v0.15.7`
-(`bfaac9f6916c09bc6525abddf64c87238fe59103`) for the Migration 009
-baseline. This keeps production-run serialization and the qualified read-only
-`update-repo status` contract aligned with the current SCAD project tooling.
+The lab was requalified on released `tool.scad-project v0.15.7`
+(`bfaac9f6916c09bc6525abddf64c87238fe59103`) during Migration 009.
+That exact pin is retained experiment evidence, not a claim about the current
+portfolio-wide tool version. Read live owner repositories/meta for current shared tooling state.
