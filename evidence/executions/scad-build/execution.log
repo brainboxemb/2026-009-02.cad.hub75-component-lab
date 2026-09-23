@@ -1,0 +1,29 @@
+SCAD producer execution
+=======================
+
+Capability: scad.build
+Action: build
+Source revision: 75e4971bd8db75185353eaf57eeaa2a18c1dd5e4
+Owner: brainboxemb/tool.scad-project
+Owner revision: 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+tool.scad-project version: 0.15.11
+Status: success
+
+Domain evidence:
+- ../../domain/last-build.json
+- ../../domain/dependency-provenance.json
+
+Decision report kind: build
+Build engine: scons
+Targets: 8
+Outcomes: BUILT=0, CACHE_RESTORED=8, CURRENT=0, ERROR=0
+
+Target decisions:
+- CACHE_RESTORED: bld/png/corner-edge-clamp-access.png
+- CACHE_RESTORED: bld/png/corner-edge-clamp-baseline.png
+- CACHE_RESTORED: bld/png/corner-edge-clamp-dovetail.png
+- CACHE_RESTORED: bld/png/corner-edge-clamp-print.png
+- CACHE_RESTORED: bld/png/corner-edge-clamp-rear-access.png
+- CACHE_RESTORED: bld/png/corner-edge-clamp-removed.png
+- CACHE_RESTORED: bld/png/corner-edge-clamp-sweep.png
+- CACHE_RESTORED: bld/png/corner-edge-clamp-tube-keepout.png

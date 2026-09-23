@@ -1,0 +1,65 @@
+Publication context : pull_request
+Publication kind    : build
+Publication branch  : dev/pr-7/bld
+
+Source
+------
+Repository          : brainboxemb/2026-009-02.cad.hub75-component-lab
+Ref type            : pull_request
+Ref                 : feature/pr-7-corner-edge-clamp-lab
+Commit              : 75e4971bd8db75185353eaf57eeaa2a18c1dd5e4
+Triggered by        : brainboxemb
+Workflow run        : https://github.com/brainboxemb/2026-009-02.cad.hub75-component-lab/actions/runs/35914620538
+
+Tooling
+-------
+SCAD toolchain image: ghcr.io/brainboxemb/scad-toolchain:v0.6.1
+SCAD toolchain ver. : v0.6.1
+tool.scad-project   : v0.15.11
+
+Git submodules
+--------------
+dsg/openscad/ext/lib.scad.clamps : e9f2fe0039a5f1cb6e2a0386a736767d95e627e7
+dsg/openscad/ext/lib.scad.clamps/tools/tool.git-project : d1ed47c7d85524cfcb2a8f7e1ea81ba106ae9c60
+dsg/openscad/ext/lib.scad.clamps/tools/tool.scad-project : 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+dsg/openscad/ext/lib.scad.forge : 100693541e056e312605c88a2f145ee1cbb829a4
+dsg/openscad/ext/lib.scad.forge/tools/tool.git-project : d1ed47c7d85524cfcb2a8f7e1ea81ba106ae9c60
+dsg/openscad/ext/lib.scad.forge/tools/tool.scad-project : 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+dsg/openscad/ext/lib.scad.hub75 : bdd92ab920213849ed678c7d11f9615d4992ed14
+dsg/openscad/ext/lib.scad.hub75/tools/tool.git-project : d1ed47c7d85524cfcb2a8f7e1ea81ba106ae9c60
+dsg/openscad/ext/lib.scad.hub75/tools/tool.scad-project : 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+dsg/openscad/ext/lib.scad.mechint : 28a8ac1aa1097f7284fd806c91b4cab655566509
+dsg/openscad/ext/lib.scad.mechint/ext/lib.scad.forge : 100693541e056e312605c88a2f145ee1cbb829a4
+dsg/openscad/ext/lib.scad.mechint/ext/lib.scad.forge/tools/tool.git-project : d1ed47c7d85524cfcb2a8f7e1ea81ba106ae9c60
+dsg/openscad/ext/lib.scad.mechint/ext/lib.scad.forge/tools/tool.scad-project : 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+dsg/openscad/ext/lib.scad.mechint/ext/lib.scad.util : af04b44c2fb1d779a87797da4290deca92c7594d
+dsg/openscad/ext/lib.scad.mechint/ext/lib.scad.util/tools/tool.git-project : d1ed47c7d85524cfcb2a8f7e1ea81ba106ae9c60
+dsg/openscad/ext/lib.scad.mechint/ext/lib.scad.util/tools/tool.scad-project : 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+dsg/openscad/ext/lib.scad.mechint/tools/tool.git-project : d1ed47c7d85524cfcb2a8f7e1ea81ba106ae9c60
+dsg/openscad/ext/lib.scad.mechint/tools/tool.scad-project : 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+tools/tool.git-project : d1ed47c7d85524cfcb2a8f7e1ea81ba106ae9c60
+tools/tool.scad-project : 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+
+Runtime components
+------------------
+SCAD toolchain
+==============
+Profile    : full
+Toolchain  : v0.6.1
+OpenSCAD   : OpenSCAD version 2026.09.17.nightly
+PythonSCAD : PythonSCAD version 1.1.2
+Python     : Python 3.12.3
+Git        : git version 2.43.0
+SCons      : 4.11.1
+Inkscape   : not installed
+drawsvg    : not installed
+BOSL2      : v2.0.752
+pybosl2    : 0.6.7
+Shapely    : 2.1.2
+docsgen    : 2.0.55
+Pillow     : 12.3.0
+OPENSCADPATH: /opt/openscad-libraries
+BOSL2_ROOT  : /opt/openscad-libraries/BOSL2
+PYTHONPATH : /__w/2026-009-02.cad.hub75-component-lab/2026-009-02.cad.hub75-component-lab/tools/tool.scad-project/src:/opt/python-libs
+Acknowledgments TXT: /usr/share/doc/scad-toolchain/OPEN_SOURCE_ACKNOWLEDGMENTS.txt
+Acknowledgments PDF: /usr/share/doc/scad-toolchain/OPEN_SOURCE_ACKNOWLEDGMENTS.pdf

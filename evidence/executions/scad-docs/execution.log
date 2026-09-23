@@ -1,0 +1,43 @@
+SCAD producer execution
+=======================
+
+Capability: scad.docs
+Action: design-build
+Source revision: 75e4971bd8db75185353eaf57eeaa2a18c1dd5e4
+Owner: brainboxemb/tool.scad-project
+Owner revision: 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+tool.scad-project version: 0.15.11
+Status: success
+
+Domain evidence: ../../domain/last-design-build.json
+
+Decision report kind: design
+Build engine: scons
+Targets: 24
+Outcomes: BUILT=24, CACHE_RESTORED=0, CURRENT=0, ERROR=0
+
+Target decisions:
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/01-mating-reference.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/02-profile-horizontal-arm.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/03-profile-vertical-arm.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/04-profile-raw-cross.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/05-profile-rounded.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/06-reinforcement-support-profile.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/07-base.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/08-screw-hole.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/09-tube-pocket.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/10-locator-pin-clearance.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/11-guide-keepout.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/12-guide-raw-shell.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/13-guide-end-mask.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/14-guide-zones.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/15-guide-taper.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/16-guide-reinforcement-relief.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/17-guide-reinforcement-detail.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/18-guides.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/19-reinforcement-locator.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/20-functional.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/21-reference-pockets.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/22-center-marks.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/23-final.png
+- BUILT: .cache/scad-project/design-stage/project/openscad/components/hub75/corner-edge-coupler/design/img/24-right-final.png
