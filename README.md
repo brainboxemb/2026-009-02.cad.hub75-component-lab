@@ -152,9 +152,19 @@ evidence:
 - HUB75 parent PR #45.
 
 
-## Retained Migration 009 tooling baseline
+## Current retained harness baseline
 
-The lab was requalified on released `tool.scad-project v0.15.7`
-(`bfaac9f6916c09bc6525abddf64c87238fe59103`) during Migration 009.
-That exact pin is retained experiment evidence, not a claim about the current
-portfolio-wide tool version. Read live owner repositories/meta for current shared tooling state.
+Migration 011 requalifies the retained lab harness on the current released
+repository/tooling baseline without reopening either completed experiment:
+
+- `tool.git-project v0.2.14`;
+- `tool.scad-project v0.15.11`;
+- `lib.scad.clamps v0.1.9`;
+- `lib.scad.mechint v0.2.4`.
+
+The historical version/commit references in the experiment report above remain
+retained evidence for what was actually qualified at the time. They are not
+rewritten to look current.
+
+The lab remains PR-build oriented: `self-build.yml` delegates to the released
+`reusable-build.yml` API and generated evidence remains temporary PR output.
