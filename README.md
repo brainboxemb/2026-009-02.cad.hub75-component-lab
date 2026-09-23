@@ -5,16 +5,6 @@ components.
 
 Parent project: `brainboxemb/2026-009-01.cad.HUB75-display-frame`.
 
-## Documentation role
-
-This repository is a completed/retained component lab, not a long-lived production owner.
-Its README is the lab report and retained evidence entrypoint; it intentionally does not
-mirror the normal project `00/10/20/30` document set.
-
-For current BrainboxEmb working conventions, start from
-`brainboxemb.meta/AGENTS.md`. Production geometry remains owned by the parent
-project and released reusable libraries named below.
-
 ## Status
 
 The two clamp-focused experiments developed on PR #3 are complete. Production
@@ -152,19 +142,31 @@ evidence:
 - HUB75 parent PR #45.
 
 
-## Current retained harness baseline
+## Current tooling baseline
 
-Migration 011 requalifies the retained lab harness on the current released
-repository/tooling baseline without reopening either completed experiment:
+The active component lab uses the Migration 011 released baseline:
 
-- `tool.git-project v0.2.14`;
-- `tool.scad-project v0.15.11`;
-- `lib.scad.clamps v0.1.9`;
-- `lib.scad.mechint v0.2.4`.
+```text
+tool.git-project  v0.2.14  d1ed47c7d85524cfcb2a8f7e1ea81ba106ae9c60
+tool.scad-project v0.15.11 8d167ad17dbfa798d68f46d871aaeed2e2e09857
+lib.scad.hub75    v0.1.8   bdd92ab920213849ed678c7d11f9615d4992ed14
+lib.scad.clamps   v0.1.9   e9f2fe0039a5f1cb6e2a0386a736767d95e627e7
+lib.scad.mechint  v0.2.4   28a8ac1aa1097f7284fd806c91b4cab655566509
+lib.scad.forge    v0.3.1   100693541e056e312605c88a2f145ee1cbb829a4
+```
 
-The historical version/commit references in the experiment report above remain
-retained evidence for what was actually qualified at the time. They are not
-rewritten to look current.
+The generic root launchers are the centrally managed `bootstrap.*` and
+`update.*` copies from `tool.git-project v0.2.14`. The lab build delegates
+to the released `tool.scad-project v0.15.11` reusable build API.
 
-The lab remains PR-build oriented: `self-build.yml` delegates to the released
-`reusable-build.yml` API and generated evidence remains temporary PR output.
+## Active experiment — corner-edge clamp integration
+
+Issue / draft PR #7 isolates the current **corner-edge** tube-mount geometry
+before further production changes. The question is intentionally limited to how
+the detachable clamp, top-entry female dovetail, insertion keep-out and Ø10 tube
+clearance should be integrated into the existing corner body.
+
+The frozen parent baseline is
+`brainboxemb/2026-009-01.cad.HUB75-display-frame@af838a5b8951feb93912adaf882e5613c4ba08d3`.
+
+See [docs/00-corner-edge-clamp-integration.md](docs/00-corner-edge-clamp-integration.md).

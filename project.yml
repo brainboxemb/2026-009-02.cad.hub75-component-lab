@@ -15,6 +15,13 @@ dependencies:
     path: tools/tool.scad-project
     ref: v0.15.11
 
+  - name: lib.scad.hub75
+    role: external
+    type: git-submodule
+    url: https://github.com/brainboxemb/lib.scad.hub75.git
+    path: dsg/openscad/ext/lib.scad.hub75
+    ref: v0.1.8
+
   - name: lib.scad.clamps
     role: external
     type: git-submodule
@@ -28,3 +35,10 @@ dependencies:
     url: https://github.com/brainboxemb/lib.scad.mechint.git
     path: dsg/openscad/ext/lib.scad.mechint
     ref: v0.2.4
+
+  - name: lib.scad.forge
+    role: external
+    type: git-submodule
+    url: https://github.com/brainboxemb/lib.scad.forge.git
+    path: dsg/openscad/ext/lib.scad.forge
+    ref: v0.3.1

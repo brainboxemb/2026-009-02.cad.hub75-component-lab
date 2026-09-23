@@ -6,6 +6,10 @@
 	path = tools/tool.scad-project
 	url = https://github.com/brainboxemb/tool.scad-project.git
 
+[submodule "dsg/openscad/ext/lib.scad.hub75"]
+	path = dsg/openscad/ext/lib.scad.hub75
+	url = https://github.com/brainboxemb/lib.scad.hub75.git
+
 [submodule "dsg/openscad/ext/lib.scad.clamps"]
 	path = dsg/openscad/ext/lib.scad.clamps
 	url = https://github.com/brainboxemb/lib.scad.clamps.git
@@ -13,3 +17,7 @@
 [submodule "dsg/openscad/ext/lib.scad.mechint"]
 	path = dsg/openscad/ext/lib.scad.mechint
 	url = https://github.com/brainboxemb/lib.scad.mechint.git
+
+[submodule "dsg/openscad/ext/lib.scad.forge"]
+	path = dsg/openscad/ext/lib.scad.forge
+	url = https://github.com/brainboxemb/lib.scad.forge.git

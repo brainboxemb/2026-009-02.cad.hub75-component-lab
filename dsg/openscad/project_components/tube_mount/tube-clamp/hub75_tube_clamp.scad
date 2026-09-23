@@ -1,17 +1,35 @@
 // File: hub75_tube_clamp.scad
 //   Project-owned detachable Ø10 HUB75 tube clamp.
 //
-// Design: design/design.md
-// Design review: hub75_tube_clamp_render.scad
+// - Design: design/design.md
+// - Design review: hub75_tube_clamp_render.scad
 //
-// lib.scad.clamps owns the reusable snap-ring geometry and nominal/tension bore
-// semantics. HUB75 keeps the ring compact, narrows it to 12 mm and places the
+// lib.scad.clamps owns the reusable snap-ring geometry and nominal/tension
+// bore semantics. HUB75 keeps the ring compact, narrows it to 12 mm and places the
 // size-matched vertical male dovetail beside the compact transition. Small,
 // medium and large use 2.0 / 2.5 / 3.0 mm dovetail heights. The complete clamp,
 // including its male dovetail, stays positioned from the tube-front datum.
 
 use <../../../ext/lib.scad.clamps/openscad/tube-clamp/tube_clamp.scad>
+use <../../../ext/lib.scad.forge/openscad/resolution.scad>
+use <../../../ext/lib.scad.forge/openscad/transform.scad>
+use <../../../ext/lib.scad.forge/openscad/csg.scad>
 use <../tube_mount_interface.scad>
+
+/* [Component] */
+d_profile = "medium"; // [small,medium,large]
+c_view = "complete"; // [complete,body]
+d_bore = "functional"; // [functional,tension]
+d_apply_transition_relief = true;
+
+/* [Transition relief] */
+d_relief_radius_mm = 6.0;
+d_relief_bite_mm = 0.4;
+d_relief_z_height_mm = 4.0;
+d_relief_z_offset_mm = 1.0;
+
+/* [Resolution] */
+c_resolution = "low"; // [low,high,export]
 
 // ----------------------------------------------------------------------
 // Fixed clamp-body baseline
@@ -24,153 +42,154 @@ use <../tube_mount_interface.scad>
 function _hub75_tube_clamp_reference_dovetail() =
     hub75_tube_mount_dovetail_create_for_size("medium");
 
-function _hub75_tube_clamp_reference_transition_width() =
-    hub75_tube_mount_dovetail_mouth_width(
+function _hub75_tube_clamp_reference_transition_width_mm() =
+    hub75_tube_mount_dovetail_mouth_width_mm(
         _hub75_tube_clamp_reference_dovetail()
     );
 
-function _hub75_tube_clamp_reference_transition_depth(
-    clamp_width = 12
+function _hub75_tube_clamp_reference_transition_depth_mm(
+    clamp_width_mm = 12
 ) =
     let(
-        ref = _hub75_tube_clamp_reference_dovetail(),
-        transition_width =
-            _hub75_tube_clamp_reference_transition_width(),
-        lateral_step =
-            max(0, (clamp_width - transition_width) / 2)
+        _obj = _hub75_tube_clamp_reference_dovetail(),
+        _transition_width_mm =
+            _hub75_tube_clamp_reference_transition_width_mm(),
+        _lateral_step_mm =
+            max(0, (clamp_width_mm - _transition_width_mm) / 2)
     )
-    lateral_step / tan(
-        hub75_tube_mount_dovetail_angle(ref)
+    _lateral_step_mm / tan(
+        hub75_tube_mount_dovetail_angle_deg(_obj)
     );
 
 function hub75_tube_clamp_create(
-    tube_center_y = undef,
-    tube_center_z = 10,
-    tube_diameter = 10,
-    tension_diameter = 9.6,
-    wall_thickness = 2.0,
-    clamp_width = 12,
-    opening_angle = 60,
-    transition_width = undef,
-    transition_depth = undef,
-    dovetail_slide = 16,
-    dovetail_center_z = undef,
-    dovetail_relief_chamfer_depth = undef,
-    transition_relief_radius = 10.0,
-    transition_relief_bite = 1.0,
-    transition_relief_face_depth = 2.0,
-    extra = 0.01,
-    dovetail = hub75_tube_mount_dovetail_create()
+    tube_center_y_mm = undef,
+    tube_center_z_mm = 10,
+    tube_diameter_mm = 10,
+    tension_diameter_mm = 9.6,
+    wall_thickness_mm = 2.0,
+    clamp_width_mm = 12,
+    opening_angle_deg = 60,
+    transition_width_mm = undef,
+    transition_depth_mm = undef,
+    dovetail_slide_len_mm = 16,
+    dovetail_center_z_mm = undef,
+    dovetail_relief_chamfer_depth_mm = undef,
+    transition_relief_radius_mm = 6.0,
+    transition_relief_bite_mm = 0.4,
+    transition_relief_z_height_mm = 4.0,
+    transition_relief_z_offset_mm = 1.0,
+    extra_mm = 0.01,
+    dovetail_obj = hub75_tube_mount_dovetail_create()
 ) =
     let(
-        active_tube_center_y =
-            is_undef(tube_center_y)
-                ? hub75_tube_mount_tube_center_y(
-                    tube_diameter
+        _active_tube_center_y_mm =
+            is_undef(tube_center_y_mm)
+                ? hub75_tube_mount_tube_center_y_mm(
+                    tube_diameter_mm
                 )
-                : tube_center_y,
-        active_dovetail_center_z =
-            is_undef(dovetail_center_z)
-                ? tube_center_z
-                : dovetail_center_z,
-        active_transition_width =
-            is_undef(transition_width)
-                ? _hub75_tube_clamp_reference_transition_width()
-                : transition_width,
-        active_transition_depth =
-            is_undef(transition_depth)
-                ? _hub75_tube_clamp_reference_transition_depth(
-                    clamp_width
+                : tube_center_y_mm,
+        _active_dovetail_center_z_mm =
+            is_undef(dovetail_center_z_mm)
+                ? tube_center_z_mm
+                : dovetail_center_z_mm,
+        _active_transition_width_mm =
+            is_undef(transition_width_mm)
+                ? _hub75_tube_clamp_reference_transition_width_mm()
+                : transition_width_mm,
+        _active_transition_depth_mm =
+            is_undef(transition_depth_mm)
+                ? _hub75_tube_clamp_reference_transition_depth_mm(
+                    clamp_width_mm
                 )
-                : transition_depth,
-        active_relief_chamfer_depth =
-            is_undef(dovetail_relief_chamfer_depth)
-                ? active_transition_depth
-                : dovetail_relief_chamfer_depth,
-        base_clamp =
+                : transition_depth_mm,
+        _active_relief_chamfer_depth_mm =
+            is_undef(dovetail_relief_chamfer_depth_mm)
+                ? _active_transition_depth_mm
+                : dovetail_relief_chamfer_depth_mm,
+        _base_clamp_obj =
             tube_clamp_create(
-                tube_diameter = tube_diameter,
+                tube_diameter = tube_diameter_mm,
                 clearance = 0,
-                tension_diameter = tension_diameter,
-                wall_thickness = wall_thickness,
-                clamp_width = clamp_width,
-                opening_angle = opening_angle,
-                base_thickness = extra,
-                transition_width = active_transition_width,
-                transition_depth = active_transition_depth,
-                extra = extra
+                tension_diameter = tension_diameter_mm,
+                wall_thickness = wall_thickness_mm,
+                clamp_width = clamp_width_mm,
+                opening_angle = opening_angle_deg,
+                base_thickness = extra_mm,
+                transition_width = _active_transition_width_mm,
+                transition_depth = _active_transition_depth_mm,
+                extra = extra_mm
             )
     )
-    assert(dovetail_slide > 0,
-        "tube-clamp dovetail_slide must be > 0")
-    assert(active_transition_width > 0,
-        "tube-clamp transition_width must be > 0")
-    assert(active_transition_width <= clamp_width,
-        "tube-clamp transition_width must not exceed clamp_width")
-    assert(active_transition_depth > 0,
-        "tube-clamp transition_depth must be > 0")
-    assert(active_relief_chamfer_depth >= 0,
-        "tube-clamp dovetail_relief_chamfer_depth must be >= 0")
-    assert(active_relief_chamfer_depth <= active_transition_depth,
-        "tube-clamp dovetail_relief_chamfer_depth must not exceed transition_depth")
-    assert(transition_relief_radius > 0,
-        "tube-clamp transition_relief_radius must be > 0")
+    assert(dovetail_slide_len_mm > 0,
+        "tube-clamp dovetail_slide_len_mm must be > 0")
+    assert(_active_transition_width_mm > 0,
+        "tube-clamp transition_width_mm must be > 0")
+    assert(_active_transition_width_mm <= clamp_width_mm,
+        "tube-clamp transition_width_mm must not exceed clamp_width_mm")
+    assert(_active_transition_depth_mm > 0,
+        "tube-clamp transition_depth_mm must be > 0")
+    assert(_active_relief_chamfer_depth_mm >= 0,
+        "tube-clamp dovetail_relief_chamfer_depth_mm must be >= 0")
+    assert(_active_relief_chamfer_depth_mm <= _active_transition_depth_mm,
+        "tube-clamp dovetail relief must not exceed transition depth")
+    assert(transition_relief_radius_mm > 0,
+        "tube-clamp transition_relief_radius_mm must be > 0")
     assert(
-        transition_relief_bite >= 0
-            && transition_relief_bite <= transition_relief_radius,
-        "tube-clamp transition_relief_bite must be between 0 and transition_relief_radius"
+        transition_relief_bite_mm >= 0
+            && transition_relief_bite_mm <= transition_relief_radius_mm,
+        "tube-clamp transition relief bite must be within the relief radius"
     )
     assert(
-        transition_relief_face_depth > 0
-            && transition_relief_face_depth
-                <= clamp_width / 2,
-        "tube-clamp transition_relief_face_depth must be > 0 and <= half clamp_width"
+        transition_relief_z_height_mm > 0,
+        "tube-clamp transition_relief_z_height_mm must be > 0"
     )
     object(
-        tube_center_y = active_tube_center_y,
-        tube_center_z = tube_center_z,
-        dovetail = dovetail,
-        dovetail_slide = dovetail_slide,
-        dovetail_center_z = active_dovetail_center_z,
-        dovetail_relief_chamfer_depth =
-            active_relief_chamfer_depth,
-        transition_relief_radius = transition_relief_radius,
-        transition_relief_bite = transition_relief_bite,
-        transition_relief_face_depth =
-            transition_relief_face_depth,
-        base_clamp = base_clamp
+        tube_center_y_mm = _active_tube_center_y_mm,
+        tube_center_z_mm = tube_center_z_mm,
+        dovetail = dovetail_obj,
+        dovetail_slide_len_mm = dovetail_slide_len_mm,
+        dovetail_center_z_mm = _active_dovetail_center_z_mm,
+        dovetail_relief_chamfer_depth_mm =
+            _active_relief_chamfer_depth_mm,
+        transition_relief_radius_mm = transition_relief_radius_mm,
+        transition_relief_bite_mm = transition_relief_bite_mm,
+        transition_relief_z_height_mm =
+            transition_relief_z_height_mm,
+        transition_relief_z_offset_mm =
+            transition_relief_z_offset_mm,
+        base_clamp = _base_clamp_obj
     );
 
-function hub75_tube_clamp_create_for_host_depth(host_depth) =
+function hub75_tube_clamp_create_for_host_depth(host_depth_mm) =
     hub75_tube_clamp_create(
-        dovetail =
+        dovetail_obj =
             hub75_tube_mount_dovetail_create(
-                host_depth = host_depth
+                host_depth_mm = host_depth_mm
             )
     );
 
 function hub75_tube_clamp_create_for_size(size) =
     hub75_tube_clamp_create(
-        dovetail = hub75_tube_mount_dovetail_create_for_size(size)
+        dovetail_obj = hub75_tube_mount_dovetail_create_for_size(size)
     );
 
-function hub75_tube_clamp_tube_center_y(clamp) =
-    clamp.tube_center_y;
+function hub75_tube_clamp_tube_center_y_mm(clamp_obj) =
+    clamp_obj.tube_center_y_mm;
 
-function hub75_tube_clamp_tube_center_z(clamp) =
-    clamp.tube_center_z;
+function hub75_tube_clamp_tube_center_z_mm(clamp_obj) =
+    clamp_obj.tube_center_z_mm;
 
-function hub75_tube_clamp_functional_diameter(clamp) =
-    tube_clamp_functional_diameter(clamp.base_clamp);
+function hub75_tube_clamp_functional_diameter_mm(clamp_obj) =
+    tube_clamp_functional_diameter(clamp_obj.base_clamp);
 
-function hub75_tube_clamp_tension_diameter(clamp) =
-    tube_clamp_tension_diameter(clamp.base_clamp);
+function hub75_tube_clamp_tension_diameter_mm(clamp_obj) =
+    tube_clamp_tension_diameter(clamp_obj.base_clamp);
 
-function hub75_tube_clamp_outer_diameter(clamp) =
-    2 * tube_clamp_outer_radius(clamp.base_clamp);
+function hub75_tube_clamp_outer_diameter_mm(clamp_obj) =
+    2 * tube_clamp_outer_radius(clamp_obj.base_clamp);
 
-function hub75_tube_clamp_dovetail_relief_chamfer_depth(clamp) =
-    clamp.dovetail_relief_chamfer_depth;
+function hub75_tube_clamp_dovetail_relief_chamfer_depth_mm(clamp_obj) =
+    clamp_obj.dovetail_relief_chamfer_depth_mm;
 
 
 // ----------------------------------------------------------------------
@@ -178,44 +197,50 @@ function hub75_tube_clamp_dovetail_relief_chamfer_depth(clamp) =
 // ----------------------------------------------------------------------
 
 module hub75_tube_clamp_body_build(
-    clamp,
+    clamp_obj,
     part_color = [0.88, 0.08, 0.05, 1],
     use_tension_bore = true,
-    high_resolution = true,
+    resolution = FG_RES_HIGH(),
     apply_transition_relief = true
 ) {
-    color(part_color)
-        _hub75_tube_clamp_ring_build(
-            clamp,
-            use_tension_bore,
-            high_resolution,
-            apply_transition_relief
-        );
+    fg_res_apply(resolution) {
+        color(part_color)
+            _hub75_tube_clamp_ring_build(
+                clamp_obj,
+                use_tension_bore,
+                resolution,
+                apply_transition_relief
+            );
+    }
 }
 
 module hub75_tube_clamp_build(
-    clamp,
+    clamp_obj,
     part_color = [0.88, 0.08, 0.05, 1],
     use_tension_bore = true,
-    high_resolution = true,
+    resolution = FG_RES_HIGH(),
     apply_transition_relief = true
 ) {
-    color(part_color)
-        union() {
-            difference() {
-                _hub75_tube_clamp_ring_build(
-                    clamp,
-                    use_tension_bore,
-                    high_resolution,
-                    apply_transition_relief
-                );
+    fg_res_apply(resolution) {
+        color(part_color)
+            fg_diff() {
+                fg_body()
+                    _hub75_tube_clamp_ring_build(
+                        clamp_obj,
+                        use_tension_bore,
+                        resolution,
+                        apply_transition_relief
+                    );
 
-                _hub75_tube_clamp_dovetail_relief_cutter(clamp);
-                _hub75_tube_clamp_dovetail_relief_chamfer_cutter(clamp);
+                fg_remove() {
+                    _hub75_tube_clamp_dovetail_relief_cutter(clamp_obj);
+                    _hub75_tube_clamp_dovetail_relief_chamfer_cutter(clamp_obj);
+                }
+
+                fg_keep()
+                    _hub75_tube_clamp_dovetail_build(clamp_obj);
             }
-
-            _hub75_tube_clamp_dovetail_build(clamp);
-        }
+    }
 }
 
 
@@ -224,180 +249,255 @@ module hub75_tube_clamp_build(
 // ----------------------------------------------------------------------
 
 module _hub75_tube_clamp_ring_build(
-    clamp,
+    clamp_obj,
     use_tension_bore,
-    high_resolution,
+    resolution,
     apply_transition_relief = true
 ) {
-    local_center_x =
-        clamp.base_clamp.base_thickness
-        + tube_clamp_outer_radius(clamp.base_clamp);
-    y_translation =
-        clamp.tube_center_y + local_center_x;
+    _local_center_x_mm =
+        clamp_obj.base_clamp.base_thickness
+        + tube_clamp_outer_radius(clamp_obj.base_clamp);
+    _y_translation_mm =
+        clamp_obj.tube_center_y_mm + _local_center_x_mm;
 
-    // Library local Z (clamp extrusion) becomes project X (tube axis).
-    // Library local X becomes -project Y, keeping the ring tangent near Y=0.
-    // Library local Y becomes -project Z around the tube centre.
-    multmatrix([
-        [ 0,  0,  1, -clamp.base_clamp.clamp_width / 2],
-        [-1,  0,  0,  y_translation],
-        [ 0, -1,  0,  clamp.tube_center_z],
-        [ 0,  0,  0,  1]
-    ])
-        difference() {
-            tube_clamp_build(
-                clamp.base_clamp,
-                use_tension_bore = use_tension_bore,
-                high_resolution = high_resolution
-            );
+    // lib.scad.clamps design Z (obj extrusion) becomes project X (tube axis).
+    // Clamp design X becomes -project Y, keeping the ring tangent near Y=0.
+    // Clamp design Y becomes -project Z around the tube centre.
+    fg_xf_frame(
+        pos_mm = [
+            -clamp_obj.base_clamp.clamp_width / 2,
+            _y_translation_mm,
+            clamp_obj.tube_center_z_mm
+        ],
+        x_axis = [0, -1, 0],
+        y_axis = [0, 0, -1]
+    )
+        fg_diff() {
+            fg_body()
+                tube_clamp_build(
+                    clamp_obj.base_clamp,
+                    use_tension_bore = use_tension_bore,
+                    high_resolution = resolution != FG_RES_LOW()
+                );
 
             if (
                 apply_transition_relief
-                && clamp.transition_relief_bite > 0
+                && clamp_obj.transition_relief_bite_mm > 0
             )
-                _hub75_tube_clamp_transition_relief_cutter_local(
-                    clamp,
-                    high_resolution
-                );
+                fg_remove()
+                    _hub75_tube_clamp_transition_relief_cutter_local(
+                        clamp_obj,
+                        resolution
+                    );
         }
 }
 
 
-// Shallow round bite at the LOWER transition foot: the sharp corner where the
-// compact sloped transition leaves the flat base / dovetail connection.
+// Small round side relief accepted in the component lab.
 //
-// This deliberately does NOT target the upper transition-to-ring attach point.
-// In the reusable clamp's native profile the target vertex is
-// [base_thickness, +/- transition_width/2].
+// The relief is defined in the component lab orientation:
+//   project X -> lab X
+//   project Y -> lab -Z
+//   project Z -> lab Y
 //
-// The cylinders use native Z as their axis. Native Z maps to project X, which is
-// printer Z in the intended side-print orientation. They are intentionally
-// short and applied from both clamp faces, matching the requested small round
-// bite on this side and on the back rather than cutting a full-width tunnel.
+// Relative to the reusable clamp design orientation this means:
+//   lab X = clamp design Z - clamp_width/2
+//   lab Y = -clamp design Y + tube_center_z
+//   lab Z = clamp design X - project Y translation
+//
+// The accepted low lab-Z cylinders therefore become short cylinders along clamp design X
+// whose circular centres sit just outside the two clamp design Z side
+// faces.  This preserves the lab result exactly without making the relief
+// dependent on the selected dovetail profile height.
 module _hub75_tube_clamp_transition_relief_cutter_local(
-    clamp,
-    high_resolution
+    clamp_obj,
+    resolution
 ) {
-    b = clamp.base_clamp;
-    radius = clamp.transition_relief_radius;
-    bite = clamp.transition_relief_bite;
-    face_depth = clamp.transition_relief_face_depth;
+    _base_obj = clamp_obj.base_clamp;
+    radius = clamp_obj.transition_relief_radius_mm;
+    bite = clamp_obj.transition_relief_bite_mm;
+    z_height = clamp_obj.transition_relief_z_height_mm;
+    z_offset = clamp_obj.transition_relief_z_offset_mm;
 
-    foot_x = b.base_thickness;
-    foot_y = b.transition_width / 2;
-    cutter_y =
-        foot_y
-        + radius
+    outer_r = tube_clamp_outer_radius(_base_obj);
+    ring_center_x =
+        _base_obj.base_thickness
+        + outer_r;
+    attach_x = min(
+        _base_obj.base_thickness
+            + _base_obj.transition_depth,
+        ring_center_x
+            + outer_r
+            - _base_obj.extra
+    );
+
+    // Lab-Z position translated back to clamp design X.
+    cutter_x =
+        attach_x
+        + z_offset;
+
+    // A radius-R cylinder centred R-bite outside either side face enters the
+    // 12 mm obj by exactly 'bite'.
+    side_center_offset =
+        radius
         - bite;
 
-    // Two profile sides (+/-Y) x two physical clamp faces (native Z).
-    for (profile_side = [-1, 1])
-        for (face = [0, 1])
-            translate([
-                foot_x,
-                profile_side * cutter_y,
-                face == 0
-                    ? -b.extra
-                    : b.clamp_width - face_depth,
-            ])
+    for (side = [-1, 1]) {
+        cutter_z =
+            side < 0
+                ? -side_center_offset
+                : _base_obj.clamp_width
+                    + side_center_offset;
+
+        fg_xf_move([
+            cutter_x - z_height / 2,
+            0,
+            cutter_z
+        ])
+            fg_xf_yrot(90)
                 cylinder(
                     r = radius,
-                    h = face_depth + b.extra,
-                    $fn =
-                        high_resolution
-                            ? 96
-                            : 32
+                    h = z_height
                 );
+    }
 }
 
 
-module _hub75_tube_clamp_dovetail_relief_cutter(clamp) {
+module _hub75_tube_clamp_dovetail_relief_cutter(clamp_obj) {
     hub75_tube_mount_dovetail_male_relief_cutter(
-        dovetail = clamp.dovetail,
-        slide = clamp.dovetail_slide,
-        relief_width = clamp.base_clamp.clamp_width,
-        center_x = 0,
-        center_z = clamp.dovetail_center_z
+        clamp_obj.dovetail,
+        slide_len_mm = clamp_obj.dovetail_slide_len_mm,
+        relief_width_mm = clamp_obj.base_clamp.clamp_width,
+        center_x_mm = 0,
+        center_z_mm = clamp_obj.dovetail_center_z_mm
     );
 }
 
-module _hub75_tube_clamp_dovetail_relief_chamfer_cutter(clamp) {
+module _hub75_tube_clamp_dovetail_relief_chamfer_cutter(clamp_obj) {
     chamfer_depth =
-        hub75_tube_clamp_dovetail_relief_chamfer_depth(clamp);
+        hub75_tube_clamp_dovetail_relief_chamfer_depth_mm(clamp_obj);
 
     if (chamfer_depth > 0) {
         mouth_y =
-            hub75_tube_mount_dovetail_mouth_y();
+            hub75_tube_mount_dovetail_mouth_y_mm();
         mouth_half_width =
-            hub75_tube_mount_dovetail_mouth_width(
-                clamp.dovetail
+            hub75_tube_mount_dovetail_mouth_width_mm(
+                clamp_obj.dovetail
             ) / 2;
         clamp_half_width =
-            clamp.base_clamp.clamp_width / 2;
+            clamp_obj.base_clamp.clamp_width / 2;
         z_min =
-            clamp.dovetail_center_z
-            - clamp.dovetail_slide / 2
-            - clamp.base_clamp.extra;
+            clamp_obj.dovetail_center_z_mm
+            - clamp_obj.dovetail_slide_len_mm / 2
+            - clamp_obj.base_clamp.extra;
         z_length =
-            clamp.dovetail_slide
-            + 2 * clamp.base_clamp.extra;
+            clamp_obj.dovetail_slide_len_mm
+            + 2 * clamp_obj.base_clamp.extra;
 
         // Project-local finishing cut. The generic mechint relief owns the
-        // exact dovetail contour; this wedge only softens the abrupt clamp-body
+        // exact dovetail contour; this wedge only softens the abrupt obj-body
         // shoulder immediately in front of the male mouth. Its slope follows
         // the same angle as the dovetail flank.
-        translate([0, 0, z_min])
+        fg_xf_zmove(z_min)
             linear_extrude(height = z_length)
                 union() {
                     polygon(points = [
                         [
                             mouth_half_width
-                                - clamp.base_clamp.extra,
-                            mouth_y + clamp.base_clamp.extra
+                                - clamp_obj.base_clamp.extra,
+                            mouth_y + clamp_obj.base_clamp.extra
                         ],
                         [
                             clamp_half_width
-                                + clamp.base_clamp.extra,
-                            mouth_y + clamp.base_clamp.extra
+                                + clamp_obj.base_clamp.extra,
+                            mouth_y + clamp_obj.base_clamp.extra
                         ],
                         [
                             clamp_half_width
-                                + clamp.base_clamp.extra,
+                                + clamp_obj.base_clamp.extra,
                             mouth_y
                                 - chamfer_depth
-                                - clamp.base_clamp.extra
+                                - clamp_obj.base_clamp.extra
                         ]
                     ]);
 
-                    mirror([1, 0, 0])
+                    fg_xf_xflip()
                         polygon(points = [
                             [
                                 mouth_half_width
-                                    - clamp.base_clamp.extra,
-                                mouth_y + clamp.base_clamp.extra
+                                    - clamp_obj.base_clamp.extra,
+                                mouth_y + clamp_obj.base_clamp.extra
                             ],
                             [
                                 clamp_half_width
-                                    + clamp.base_clamp.extra,
-                                mouth_y + clamp.base_clamp.extra
+                                    + clamp_obj.base_clamp.extra,
+                                mouth_y + clamp_obj.base_clamp.extra
                             ],
                             [
                                 clamp_half_width
-                                    + clamp.base_clamp.extra,
+                                    + clamp_obj.base_clamp.extra,
                                 mouth_y
                                     - chamfer_depth
-                                    - clamp.base_clamp.extra
+                                    - clamp_obj.base_clamp.extra
                             ]
                         ]);
                 }
     }
 }
 
-module _hub75_tube_clamp_dovetail_build(clamp) {
+module _hub75_tube_clamp_dovetail_build(clamp_obj) {
     hub75_tube_mount_dovetail_male_build(
-        dovetail = clamp.dovetail,
-        slide = clamp.dovetail_slide,
-        center_x = 0,
-        center_z = clamp.dovetail_center_z
+        clamp_obj.dovetail,
+        slide_len_mm = clamp_obj.dovetail_slide_len_mm,
+        center_x_mm = 0,
+        center_z_mm = clamp_obj.dovetail_center_z_mm
     );
 }
+
+// ----------------------------------------------------------------------
+// Standalone component entrypoint
+// ----------------------------------------------------------------------
+//
+// Top-level code is intentionally kept here so this component can be opened
+// directly in OpenSCAD. Consumers normally import the API with use<...>, which
+// does not execute this standalone entrypoint.
+
+_standalone_clamp_obj =
+    hub75_tube_clamp_create(
+        dovetail_obj =
+            hub75_tube_mount_dovetail_create_for_size(
+                d_profile
+            ),
+        transition_relief_radius_mm =
+            d_relief_radius_mm,
+        transition_relief_bite_mm =
+            d_relief_bite_mm,
+        transition_relief_z_height_mm =
+            d_relief_z_height_mm,
+        transition_relief_z_offset_mm =
+            d_relief_z_offset_mm
+    );
+
+_standalone_use_tension =
+    d_bore == "tension";
+
+if (c_view == "body")
+    hub75_tube_clamp_body_build(
+        _standalone_clamp_obj,
+        use_tension_bore =
+            _standalone_use_tension,
+        resolution =
+            c_resolution,
+        apply_transition_relief =
+            d_apply_transition_relief
+    );
+else
+    hub75_tube_clamp_build(
+        _standalone_clamp_obj,
+        use_tension_bore =
+            _standalone_use_tension,
+        resolution =
+            c_resolution,
+        apply_transition_relief =
+            d_apply_transition_relief
+    );
