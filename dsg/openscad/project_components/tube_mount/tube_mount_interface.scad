@@ -13,7 +13,7 @@
 // local Y = -2.0 mm. Small / medium / large hosts scale the dovetail height
 // with their 2 / 3 / 4 mm rear-base thickness.
 
-use <../../ext/lib.scad.mechint/openscad/sliding-dovetail/sliding_dovetail.scad>
+use <../../ext/lib.scad.mechint/openscad/sliding_dovetail.scad>
 
 _HUB75_TUBE_MOUNT_FRONT_OFFSET = 1.0;
 _HUB75_TUBE_MOUNT_DOVETAIL_WIDTH = 12;
