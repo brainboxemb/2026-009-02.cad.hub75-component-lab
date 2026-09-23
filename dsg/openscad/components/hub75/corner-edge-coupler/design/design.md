@@ -30,45 +30,6 @@ separate production modules. When that happens the text identifies the view as
 documentation-only and points to the production helper that generates the
 corresponding final geometry.
 
-
-## Code coupling
-
-The design views are not a second implementation of the component. Their primary
-purpose is to expose construction states that are otherwise hidden inside the
-production geometry.
-
-Use this chain when tracing a design image back into code:
-
-```text
-design.md construction step
-    ↓
-hub75_corner_edge_coupler_render.scad
-    documentation adapter / explanatory view
-    ↓
-hub75_corner_edge_coupler.scad
-    production helper(s)
-    ↓
-Forge primitive where the production helper uses one
-```
-
-The current production coupling for the core component is:
-
-| Construction responsibility | Production helper | Forge implementation |
-| --- | --- | --- |
-| XZ profile → Y extrusion | `_hub75_corner_edge_coupler_extrude_xz_y()` | `fg_xf_frame()` |
-| through bore + shallow relief | `_hub75_corner_edge_coupler_through_hole_y_with_relief()` | `fg_cut_cylinder()` |
-| mounting-tube pocket | `_hub75_corner_edge_coupler_mounting_tube_pocket_cutter()` | `fg_cut_cylinder()` |
-| horizontal outside-ridge axis remap | `_hub75_corner_edge_coupler_horizontal_outer_ridge()` | `fg_xf_frame()` |
-| standalone resolution | component entrypoint | `fg_res_apply()` |
-
-The remaining 2D profile construction and Boolean shape logic is intentionally
-plain OpenSCAD where Forge would not make the geometric intent clearer.
-
-Some early walkthrough states, such as the separate horizontal and vertical
-rectangles used to explain the raw cross, exist only in the documentation
-adapter. Those views must derive their dimensions from the production object and
-accessors; they are not authoritative geometry by themselves.
-
 ## Physical purpose and variants
 
 The corner-edge coupler supports one outside corner of a portrait HUB75 panel.
@@ -202,62 +163,8 @@ The production representation is:
 _hub75_corner_edge_coupler_panel_keepout_2d(coupler)
 ```
 
-This is not a hand-authored polygon and it is not the union of two rail
-rectangles. Production constructs the L-shaped physical keep-out as one Boolean
-difference:
-
-```text
-large local corner square
-MINUS
-inward opening rectangle with a rounded corner
-=
-physical L-shaped rear-corner keep-out
-```
-
-The corresponding production construction is:
-
-```scad
-difference() {
-    square([span, span]);
-
-    offset(r = corner_r)
-        offset(delta = -corner_r)
-            translate([side_w, end_w])
-                square([...]);
-}
-```
-
-The nested `offset()` pair is what creates the inner curve. The opening
-rectangle is first shrunk by `corner_r` and then grown back by the same radius
-with rounded corners. Subtracting that rounded opening from the large square
-leaves the gray L-shape shown above.
-
-The parameters are all panel-derived:
-
-```scad
-side_w   = coupler.rear_side_rail_width;
-end_w    = coupler.rear_end_rail_width;
-corner_r = coupler.rear_opening_corner_radius;
-```
-
-`rear_opening_corner_radius` comes from `lib.scad.hub75`. Its reference
-value is 5.0 mm and is scaled with the actual panel dimensions; with the current
-159.70 × 319.71 mm panel model the effective radius is approximately 4.99 mm.
-
-The red band in the image is a separate explanatory layer. It is the additional
-print fit clearance around the physical gray keep-out:
-
-```scad
-offset(delta = coupler.fit_clearance)
-    _hub75_corner_edge_coupler_panel_keepout_2d(coupler);
-```
-
-with the original keep-out subtracted so only the clearance band remains.
-
-The initial translation places this local construction on the physical rear
-panel corner, and the X mirror supplies the left/right variant. The side/end rail
-widths and opening radius therefore remain authoritative panel geometry rather
-than duplicated project dimensions.
+It starts from the physical rear panel quadrant and subtracts the rounded rear
+opening. The side/end rail widths and opening radius are all panel-derived.
 
 ## 2. Build the horizontal arm around the rear end rail
 
@@ -443,15 +350,6 @@ The production module is:
 _hub75_corner_edge_coupler_base_solid(coupler)
 ```
 
-Its XZ-to-Y mapping is owned by:
-
-```scad
-_hub75_corner_edge_coupler_extrude_xz_y(...)
-```
-
-That helper now uses Forge `fg_xf_frame()`; the design view therefore follows
-the production coordinate mapping rather than maintaining its own transform.
-
 The normal `_hub75_corner_edge_coupler_profile_2d()` remains the family reference
 contour used for surface markings. The local structural extension exists only
 where the reinforcement clearance requires more load-bearing material.
@@ -482,10 +380,6 @@ The Ø3.4 bore plus shallow anti-elephant-foot widening is created by:
 _hub75_corner_edge_coupler_screw_cutter(coupler)
 ```
 
-The shared Y-axis bore helper underneath it uses Forge
-`fg_cut_cylinder()`, including the explicit top/bottom overlap semantics. The
-nominal bore and relief dimensions remain project-owned.
-
 and the resulting base state is:
 
 ```scad
@@ -514,10 +408,6 @@ The production cutter and next base state are:
 _hub75_corner_edge_coupler_mounting_tube_pocket_cutter(coupler)
 _hub75_corner_edge_coupler_base_after_pocket(coupler)
 ```
-
-The pocket cutter is now expressed with Forge `fg_cut_cylinder()`. Its
-`FG_BOTTOM()` overlap preserves the original 0.05 mm Boolean overlap without
-changing the nominal pocket depth or diameter.
 
 The pocket remains blind; the structural screw bore still passes through it.
 
@@ -709,7 +599,7 @@ The panel-derived inputs are:
 coupler.panel_taper_depth
 coupler.panel_rear_outer_inset_x
 coupler.panel_rear_outer_inset_z
-hub75_panel_taper_shift_at_depth_mm(...)
+hub75_panel_taper_shift_at_depth(...)
 ```
 
 Production builds the two ridges **independently**:
@@ -718,10 +608,6 @@ Production builds the two ridges **independently**:
 _hub75_corner_edge_coupler_horizontal_outer_ridge(coupler)
 _hub75_corner_edge_coupler_vertical_outer_ridge(coupler)
 ```
-
-The horizontal ridge's YZ-profile-to-X remap is now represented with Forge
-`fg_xf_frame()` rather than a raw transformation matrix. The geometric prism
-and taper calculation are unchanged.
 
 and unions them only afterwards in:
 

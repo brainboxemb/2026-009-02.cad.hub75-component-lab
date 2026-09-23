@@ -8,7 +8,7 @@ corner-edge tube-mount interface.
 ```text
 parent repository : brainboxemb/2026-009-01.cad.HUB75-display-frame
 parent branch     : main
-parent commit     : 06191e400bc8b334af929274defbed627df461f6
+parent commit     : af838a5b8951feb93912adaf882e5613c4ba08d3
 lab issue / PR    : #7
 ```
 
@@ -105,22 +105,18 @@ iterations that produced them.
 
 ## Maintenance refresh
 
-The parent baseline was refreshed after the HUB75 maintenance pass on
-2026-09-22.
+The parent baseline was refreshed to the Migration 011-qualified HUB75 main
+revision on 2026-09-23.
 
 ```text
-previous parent baseline : 267abce8a3ac6e65f493618d2d4cc03164ea9911
-current parent baseline  : 06191e400bc8b334af929274defbed627df461f6
+previous parent baseline : 06191e400bc8b334af929274defbed627df461f6
+current parent baseline  : af838a5b8951feb93912adaf882e5613c4ba08d3
 ```
 
-The relevant maintenance changes are implementation cleanups, not a new product
-geometry decision:
-
-- corner core uses targeted Forge CSG/cutter vocabulary where it clarifies intent;
-- corner tube-mount wrapper uses the current Forge cutter/transform vocabulary;
-- detachable clamp uses the current Forge CSG composition;
-- STL print orientation is now owned at the parent export/manufacturing boundary
-  and is therefore not copied into this lab geometry harness.
+This refresh incorporates the parent SCAD naming/placement/CSG cleanup and the
+Migration 011 released dependency baseline without changing the lab question.
+The copied project-owned source is again an exact snapshot of the corresponding
+parent files; reusable implementations remain normal released dependencies.
 
 The lab continues to study the same corner integration question against this
 maintained parent source.

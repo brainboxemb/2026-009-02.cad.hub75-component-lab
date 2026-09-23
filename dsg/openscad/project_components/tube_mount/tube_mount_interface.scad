@@ -45,11 +45,11 @@ function hub75_tube_mount_tube_front_offset_mm() =
 
 function hub75_tube_mount_tube_center_y_mm(
     tube_diameter_mm = 10,
-    panel = hub75_p5_64x32_panel_create()
+    panel_obj = hub75_p5_64x32_panel_create()
 ) =
     hub75_tube_mount_tube_front_offset_mm()
     + tube_diameter_mm / 2
-    - hub75_p5_64x32_panel_mounting_plane_y(panel);
+    - hub75_p5_64x32_panel_mounting_plane_y(panel_obj);
 
 function hub75_tube_mount_dovetail_mouth_y_mm() =
     _HUB75_TUBE_MOUNT_DOVETAIL_MOUTH_Y_MM;
@@ -165,32 +165,32 @@ function hub75_tube_mount_dovetail_create_for_size(
         entry_slot_len_mm = entry_slot_len_mm
     );
 
-function hub75_tube_mount_dovetail_angle_deg(obj) =
-    obj.angle_deg;
+function hub75_tube_mount_dovetail_angle_deg(dovetail_obj) =
+    dovetail_obj.angle_deg;
 
-function hub75_tube_mount_dovetail_mouth_land_depth_mm(obj) =
-    sliding_dovetail_mouth_land_depth_mm(obj);
+function hub75_tube_mount_dovetail_mouth_land_depth_mm(dovetail_obj) =
+    sliding_dovetail_mouth_land_depth_mm(dovetail_obj);
 
-function hub75_tube_mount_dovetail_root_land_depth_mm(obj) =
-    sliding_dovetail_root_land_depth_mm(obj);
+function hub75_tube_mount_dovetail_root_land_depth_mm(dovetail_obj) =
+    sliding_dovetail_root_land_depth_mm(dovetail_obj);
 
-function hub75_tube_mount_dovetail_mouth_width_mm(obj) =
-    sliding_dovetail_mouth_width_mm(obj);
+function hub75_tube_mount_dovetail_mouth_width_mm(dovetail_obj) =
+    sliding_dovetail_mouth_width_mm(dovetail_obj);
 
-function hub75_tube_mount_dovetail_female_root_width_mm(obj) =
-    sliding_dovetail_female_root_width_mm(obj);
+function hub75_tube_mount_dovetail_female_root_width_mm(dovetail_obj) =
+    sliding_dovetail_female_root_width_mm(dovetail_obj);
 
 function hub75_tube_mount_dovetail_female_slide_len_mm(
-    obj,
+    dovetail_obj,
     slide_len_mm
 ) =
     sliding_dovetail_female_slide_len_mm(
-        obj,
+        dovetail_obj,
         slide_len_mm
     );
 
-function hub75_tube_mount_dovetail_entry_slot_len_mm(obj) =
-    sliding_dovetail_entry_slot_len_mm(obj);
+function hub75_tube_mount_dovetail_entry_slot_len_mm(dovetail_obj) =
+    sliding_dovetail_entry_slot_len_mm(dovetail_obj);
 
 
 // ----------------------------------------------------------------------
@@ -198,7 +198,7 @@ function hub75_tube_mount_dovetail_entry_slot_len_mm(obj) =
 // ----------------------------------------------------------------------
 
 module hub75_tube_mount_dovetail_male_build(
-    obj,
+    dovetail_obj,
     slide_len_mm,
     center_x_mm = 0,
     center_z_mm = 0
@@ -208,13 +208,13 @@ module hub75_tube_mount_dovetail_male_build(
         center_z_mm = center_z_mm
     )
         sliding_dovetail_male_build(
-            obj,
+            dovetail_obj,
             slide_len_mm = slide_len_mm
         );
 }
 
 module hub75_tube_mount_dovetail_male_relief_cutter(
-    obj,
+    dovetail_obj,
     slide_len_mm,
     relief_width_mm,
     center_x_mm = 0,
@@ -225,14 +225,14 @@ module hub75_tube_mount_dovetail_male_relief_cutter(
         center_z_mm = center_z_mm
     )
         sliding_dovetail_male_relief_cutter(
-            obj,
+            dovetail_obj,
             slide_len_mm = slide_len_mm,
             relief_width_mm = relief_width_mm
         );
 }
 
 module hub75_tube_mount_dovetail_female_cutter(
-    obj,
+    dovetail_obj,
     slide_len_mm,
     center_x_mm = 0,
     center_z_mm = 0
@@ -242,7 +242,7 @@ module hub75_tube_mount_dovetail_female_cutter(
         center_z_mm = center_z_mm
     )
         sliding_dovetail_female_cutter(
-            obj,
+            dovetail_obj,
             slide_len_mm = slide_len_mm
         );
 }

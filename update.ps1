@@ -1,6 +1,6 @@
 # Managed-Source: brainboxemb/tool.git-project/bootstrap/consumer-update.ps1
-# Managed-Source-Version: 0.2.12
-# Managed-Source-Revision: ae838e1037b01c5085d5ee2c4dca6cdccd36c1d6
+# Managed-Source-Version: v0.2.14
+# Managed-Source-Revision: d1ed47c7d85524cfcb2a8f7e1ea81ba106ae9c60
 # Managed-Local-Patch: none
 param(
     [ValidateSet("update", "status")]
@@ -32,6 +32,9 @@ function Get-BootstrapHead {
     if (-not (Test-Path -LiteralPath $ToolRoot -PathType Container)) { return $null }
     $Top = (& git -C $ToolRoot rev-parse --show-toplevel 2>$null | Select-Object -First 1)
     if ($LASTEXITCODE -ne 0 -or -not $Top) { return $null }
+    $ResolvedTop = (Resolve-Path -LiteralPath $Top.Trim()).Path
+    $ResolvedToolRoot = (Resolve-Path -LiteralPath $ToolRoot).Path
+    if ($ResolvedTop -ne $ResolvedToolRoot) { return $null }
     return ((& git -C $ToolRoot rev-parse HEAD 2>$null | Select-Object -First 1).Trim().ToLowerInvariant())
 }
 
